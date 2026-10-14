@@ -1,0 +1,87 @@
+{
+  "MATH-500": {
+    "n": 500,
+    "median_words": 26.0,
+    "answer_kinds": {
+      "expression/other": 182,
+      "integer": 313,
+      "decimal": 5
+    },
+    "answer_missing": 0,
+    "by_level": {
+      "1": 43,
+      "2": 90,
+      "3": 105,
+      "4": 128,
+      "5": 134
+    },
+    "by_subject": {
+      "Algebra": 124,
+      "Intermediate Algebra": 97,
+      "Prealgebra": 82,
+      "Number Theory": 62,
+      "Precalculus": 56,
+      "Geometry": 41,
+      "Counting & Probability": 38
+    }
+  },
+  "OlympiadBench": {
+    "n": 675,
+    "median_words": 38,
+    "answer_kinds": {
+      "integer": 399,
+      "expression/other": 273,
+      "decimal": 3
+    },
+    "answer_missing": 0,
+    "answer_type": {
+      "Numerical": 572,
+      "Expression": 64,
+      "Tuple": 33,
+      "Interval": 6
+    },
+    "multiple_answer": 94,
+    "subfield": {
+      "Combinatorics": 154,
+      "Algebra": 264,
+      "Number Theory": 128,
+      "Geometry": 129
+    }
+  },
+  "Minerva Math": {
+    "n": 272,
+    "median_words": 54.0,
+    "answer_kinds": {
+      "decimal": 66,
+      "expression/other": 143,
+      "integer": 63
+    },
+    "answer_missing": 0,
+    "courses": 9
+  },
+  "AIME 2024": {
+    "n": 30,
+    "median_words": 55.0,
+    "answer_kinds": {
+      "integer": 30
+    },
+    "answer_missing": 0
+  },
+  "AMC 2023": {
+    "n": 40,
+    "median_words": 45.0,
+    "answer_kinds": {
+      "integer": 40
+    },
+    "answer_missing": 0,
+    "answers_stored_as_float": 40
+  },
+  "GSM8K (not in evaluation suite)": {
+    "n": 1319,
+    "median_words": 43,
+    "answer_kinds": {
+      "integer": 1319
+    },
+    "answer_missing": 0
+  }
+}

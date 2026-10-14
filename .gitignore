@@ -1,0 +1,17 @@
+data/raw/
+checkpoints/
+wandb/
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv*/
+venv*/
+
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+
+.DS_Store

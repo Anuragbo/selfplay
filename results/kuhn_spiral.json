@@ -1,0 +1,117 @@
+{
+  "impl": "spiral",
+  "n_games_per_matchup": 10000,
+  "payoff_check": {
+    "bet_call_final_chips": {
+      "0": -1,
+      "1": 1
+    },
+    "check_check_final_chips": {
+      "0": -1,
+      "1": 1
+    },
+    "called_bet_changes_stakes": false
+  },
+  "matchups": {
+    "equilibrium vs equilibrium": {
+      "a_win": 0.4946,
+      "a_draw": 0.0,
+      "a_loss": 0.5054,
+      "by_seat": {
+        "equilibrium_as_player0": {
+          "loss": 0.492,
+          "win": 0.508
+        },
+        "equilibrium_as_player1": {
+          "win": 0.4812,
+          "loss": 0.5188
+        }
+      }
+    },
+    "never_fold vs equilibrium": {
+      "a_win": 0.5934,
+      "a_draw": 0.0,
+      "a_loss": 0.4066,
+      "by_seat": {
+        "never_fold_as_player0": {
+          "loss": 0.413,
+          "win": 0.587
+        },
+        "never_fold_as_player1": {
+          "win": 0.5998,
+          "loss": 0.4002
+        }
+      }
+    },
+    "random vs equilibrium": {
+      "a_win": 0.5171,
+      "a_draw": 0.0,
+      "a_loss": 0.4829,
+      "by_seat": {
+        "random_as_player0": {
+          "loss": 0.4878,
+          "win": 0.5122
+        },
+        "random_as_player1": {
+          "win": 0.522,
+          "loss": 0.478
+        }
+      }
+    },
+    "random vs never_fold": {
+      "a_win": 0.3078,
+      "a_draw": 0.0,
+      "a_loss": 0.6922,
+      "by_seat": {
+        "random_as_player0": {
+          "loss": 0.7548,
+          "win": 0.2452
+        },
+        "random_as_player1": {
+          "win": 0.3704,
+          "loss": 0.6296
+        }
+      }
+    },
+    "calling_station vs equilibrium": {
+      "a_win": 0.4981,
+      "a_draw": 0.0,
+      "a_loss": 0.5019,
+      "by_seat": {
+        "calling_station_as_player0": {
+          "loss": 0.4994,
+          "win": 0.5006
+        },
+        "calling_station_as_player1": {
+          "win": 0.4956,
+          "loss": 0.5044
+        }
+      }
+    },
+    "never_fold vs never_fold": {
+      "a_win": 0.4981,
+      "a_draw": 0.0,
+      "a_loss": 0.5019,
+      "by_seat": {
+        "never_fold_as_player0": {
+          "loss": 0.4994,
+          "win": 0.5006
+        },
+        "never_fold_as_player1": {
+          "win": 0.4956,
+          "loss": 0.5044
+        }
+      }
+    }
+  },
+  "winner_rule": {
+    "agrees_with_chip_leader": 0.7052666666666667,
+    "agrees_with_last_hand": 1.0,
+    "games": 60000
+  },
+  "decisions_per_match": {
+    "mean": 11.298133333333332,
+    "min": 10,
+    "max": 15
+  }
+}

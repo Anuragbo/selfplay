@@ -1,0 +1,19 @@
+[project]
+name = "selfplay"
+version = "0.1.0"
+description = "Does self-play on text games teach reasoning at small scale? (CMPE 260)"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = ["third_party"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["benchmark_stats", "kuhn_env_explore", "make_figures"]
