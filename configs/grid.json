@@ -1,0 +1,46 @@
+{
+  "_comment": "Training grid for python -m selfplay.train. Values marked in _sources come from UnstableBaselines 0.2.2 defaults or the project notes; anything not yet checked against SPIRAL's paper is listed under _to_verify.",
+  "defaults": {
+    "game": "SpiralKuhnPoker-v1",
+    "learning_steps": 400,
+    "batch_size": 128,
+    "mini_batch_size": 1,
+    "learning_rate": 1e-05,
+    "gradient_clipping": 0.2,
+    "max_generation_len": 4096,
+    "max_train_len": null,
+    "prompt_template": "qwen3-zs",
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "rae_tau": 0.001,
+    "format_reward": 1.5,
+    "valid_move_reward": 1.0,
+    "invalid_move_penalty": -1.0,
+    "lora": {"lora_rank": 32, "lora_alpha": 32, "lora_dropout": 0.0,
+             "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]},
+    "num_collection_workers": 128,
+    "num_eval_workers": 8,
+    "eval_opponent": "never_fold",
+    "save_every": 25
+  },
+  "models": {
+    "qwen3-1.7b": "Qwen/Qwen3-1.7B-Base",
+    "qwen3-4b": "Qwen/Qwen3-4B-Base"
+  },
+  "estimators": ["rae", "shared"],
+  "seeds": [0, 1, 2],
+  "controls": {
+    "_comment": "Scripted fixed-opponent condition: the model always plays one seat against this opponent.",
+    "opponent": "never_fold",
+    "estimators": ["rae"],
+    "seeds": [0, 1, 2]
+  },
+  "_sources": {
+    "learning_steps, batch_size": "PROJECT_NOTES section 3: SPIRAL's run is 400 steps x 128",
+    "learning_rate, gradient_clipping, max_generation_len, lora, mini_batch_size": "unstable.runtime.build defaults",
+    "temperature, top_p": "unstable.runtime._default_vllm_cfg and VLLMActor defaults",
+    "rae_tau": "unstable RoleAdvantageByEnvFormatter default",
+    "format_reward, valid_move_reward, invalid_move_penalty": "unstable.runtime.build step reward transforms (RewardForFormat(1.5), PenaltyForInvalidMove(1.0, -1.0))"
+  },
+  "_to_verify": ["SPIRAL's learning rate, sampling temperature, generation length and EMA decay for RAE"]
+}
