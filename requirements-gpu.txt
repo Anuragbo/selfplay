@@ -1,0 +1,6 @@
+# GPU runs (a single GPU, e.g. a Colab T4): evaluation and base-model game play. Install with: pip install -r requirements-gpu.txt
+# vLLM is not pinned: releases support a narrow range of Python versions and Colab's Python changes. The installed
+# version is recorded in every run's run_config.json. If vLLM does not install, use --backend hf.
+vllm
+textarena==0.7.4
+math-verify[antlr4_13_2]==0.9.0
