@@ -1,0 +1,39 @@
+{
+  "benchmark": "MATH-500",
+  "sources": {
+    "Qwen3-1.7B-Base": "results/eval-base-qwen3-1.7b.json",
+    "Qwen3-4B-Base": "results/eval-base-qwen3-4b.json"
+  },
+  "accuracy": {
+    "Qwen3-1.7B-Base": {
+      "accuracy": 0.592,
+      "ci_low": 0.5489213580158334,
+      "ci_high": 0.6350786419841665,
+      "n": 500
+    },
+    "Qwen3-4B-Base": {
+      "accuracy": 0.708,
+      "ci_low": 0.668145338601363,
+      "ci_high": 0.7478546613986369,
+      "n": 500
+    }
+  },
+  "difference_4b_minus_1_7b": {
+    "bootstrap": {
+      "mean_diff": 0.116,
+      "ci_low": 0.07,
+      "ci_high": 0.162,
+      "n": 500,
+      "n_boot": 10000,
+      "alpha": 0.05
+    },
+    "mcnemar": {
+      "only_a_correct": 41,
+      "only_b_correct": 99,
+      "discordant": 140,
+      "p_value": 1.0330793850718322e-06
+    },
+    "discordance": 0.28,
+    "ci_half_width_at_this_discordance": 0.046381213218163124
+  }
+}
