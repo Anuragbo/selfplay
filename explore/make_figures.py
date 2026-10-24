@@ -1,4 +1,4 @@
-"""Generate the Check-in 1 figures from the JSON files in results/."""
+"""Generate the report figures from the JSON files in results/ (Figs. 1-2: Check-in 1; Figs. 3-4: Check-in 2)."""
 
 import argparse
 import json
@@ -14,6 +14,7 @@ INK, INK_SECONDARY, MUTED, GRID = "#0b0b0b", "#52514e", "#8a8984", "#e6e5e1"
 BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
 
 SPIRAL_MATH500_GAIN = 3.0  # Qwen3-4B-Base, Kuhn Poker only: 73.4 -> 76.4 (SPIRAL, Table 1)
+SPIRAL_MATH500_BASE_4B = 73.4  # Qwen3-4B-Base before training (SPIRAL, Table 1)
 SUITE = {"AIME24": "AIME 2024", "AMC23": "AMC 2023", "Minerva": "Minerva Math",
          "MATH-500": "MATH-500", "OlympiadBench": "OlympiadBench"}
 CHANGE_RATES = (0.16, 0.12, 0.08)
@@ -106,6 +107,62 @@ def kuhn_matchups_figure(results: Path, out: Path) -> None:
     plt.close(fig)
 
 
+def math500_base_figure(results: Path, out: Path) -> None:
+    stats = _load(results / "checkin2_stats.json")
+    names = list(stats["accuracy"])
+    fig, ax = plt.subplots(figsize=(6.4, 2.4), dpi=200)
+    for y, (name, color) in enumerate(zip(names, (BLUE, ORANGE), strict=True)):
+        acc = stats["accuracy"][name]
+        value, low, high = (100 * acc[k] for k in ("accuracy", "ci_low", "ci_high"))
+        ax.barh(y, value, height=0.5, color=color)
+        ax.errorbar(value, y, xerr=[[value - low], [high - value]], color=INK, capsize=3, lw=1)
+        ax.text(high + 1.0, y, f"{value:.1f}%  [{low:.1f}, {high:.1f}]", va="center", fontsize=7.5, color=INK)
+    ax.plot([SPIRAL_MATH500_BASE_4B], [1], marker="D", color=INK, ms=5, zorder=5)
+    ax.annotate(f"SPIRAL reports {SPIRAL_MATH500_BASE_4B:.1f}", (SPIRAL_MATH500_BASE_4B, 1), xytext=(0, 13),
+                textcoords="offset points", ha="center", fontsize=7.5, color=INK)
+    boot = stats["difference_4b_minus_1_7b"]["bootstrap"]
+    ax.text(2, -0.62, f"Paired difference 4B - 1.7B: {100 * boot['mean_diff']:+.1f} points, 95% CI "
+            f"[{100 * boot['ci_low']:+.1f}, {100 * boot['ci_high']:+.1f}], McNemar "
+            f"p = {stats['difference_4b_minus_1_7b']['mcnemar']['p_value']:.1e}", fontsize=7.5, color=INK_SECONDARY)
+    ax.set_yticks(range(len(names)))
+    ax.set_yticklabels(names)
+    ax.set_ylim(-0.85, 1.6)
+    ax.set_xlim(0, 100)
+    ax.set_xlabel("MATH-500 accuracy, greedy decoding, 500 problems (%)")
+    ax.xaxis.grid(True, color=GRID, lw=0.6)
+    ax.set_axisbelow(True)
+    ax.tick_params(axis="y", length=0)
+    fig.tight_layout()
+    fig.savefig(out)
+    plt.close(fig)
+
+
+def kuhn_base_figure(results: Path, out: Path) -> None:
+    data = _load(results / "kuhn-base-qwen3-1.7b.json")
+    counts = {int(k): v for k, v in data["match_summary"]["model_turns_per_match_counts"].items()}
+    metrics = {r["metric"]: r["value"] for r in data["results"]}
+    turns = range(1, max(counts) + 1)
+    fig, ax = plt.subplots(figsize=(6.4, 2.6), dpi=200)
+    ax.bar(list(turns), [counts.get(t, 0) for t in turns], width=0.6, color=ORANGE)
+    for t in turns:
+        ax.text(t, counts.get(t, 0) + 0.8, str(counts.get(t, 0)), ha="center", fontsize=7.5, color=INK)
+    n = sum(counts.values())
+    ax.text(0.98, 0.95, f"{n} matches vs. never fold: {round(metrics['win_rate'] * n)} won, "
+            f"{round(metrics['loss_by_invalid_move_rate'] * n)} lost by an invalid move\n"
+            f"Replies without \\boxed{{}}: {100 * metrics['format_error_rate']:.0f}%   "
+            f"Cut off at 4,096 tokens: {100 * metrics['truncated_rate']:.0f}%",
+            transform=ax.transAxes, ha="right", va="top", fontsize=7.5, color=INK_SECONDARY)
+    ax.set_xticks(list(turns))
+    ax.set_ylim(0, max(counts.values()) * 1.45)
+    ax.set_xlabel("Model turns per match (the last one was the invalid move that lost it)")
+    ax.set_ylabel("Matches")
+    ax.yaxis.grid(True, color=GRID, lw=0.6)
+    ax.set_axisbelow(True)
+    fig.tight_layout()
+    fig.savefig(out)
+    plt.close(fig)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("results", type=Path, help="directory with the result JSON files")
@@ -116,6 +173,8 @@ def main() -> None:
     _style()
     detectable_effect_figure(args.results, args.figures / "fig1_detectable_effect.png")
     kuhn_matchups_figure(args.results, args.figures / "fig2_kuhn_matchups.png")
+    math500_base_figure(args.results, args.figures / "fig3_math500_base.png")
+    kuhn_base_figure(args.results, args.figures / "fig4_kuhn_base_turns.png")
     print(f"figures written to {args.figures}")
 
 
