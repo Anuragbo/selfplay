@@ -23,6 +23,8 @@ Pilot training (Check-in 3): Qwen3-1.7B-Base, RAE, seed 0, 30 steps of 8 matches
 
 - Invalid-move losses 100% → 27.5% (first vs. last 5 steps); format errors 37.7% → 0.7%; 3 wins in 240 matches.
 - MATH-500 59.2% → 62.2%: +3.0 points [−1.2, +7.0], exact McNemar p = 0.18 (not significant).
+- Shared-baseline run (same settings, partial: 20 of 30 steps): invalid-move losses 70.0% vs. 52.5% for RAE over
+  steps 16–20; one seed each, intervals overlap.
 
 The pilot is a scaled-down version of the design in `configs/grid.json` (see `configs/pilot.json` for the
 differences). Every number in the check-in reports comes from `results/`.
