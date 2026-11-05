@@ -27,5 +27,20 @@ CLAUDE.md
 CLAUDE.local.md
 AGENTS.md
 
+.env
+.env.*
+.netrc
+*.pem
+*.key
+kaggle.json
+credentials*.json
+client_secret*.json
+service_account*.json
+
+~$*
+*.tmp
+*.bak
+
 .DS_Store
 Thumbs.db
+desktop.ini
