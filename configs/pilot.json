@@ -19,7 +19,7 @@
     "invalid_move_penalty": -1.0,
     "lora": {"lora_rank": 32, "lora_alpha": 32, "lora_dropout": 0.0,
              "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]},
-    "save_every": 5
+    "save_every": 2
   },
   "runs": [
     {"run_id": "pilot_qwen3-1.7b_rae_s0", "model": "Qwen/Qwen3-1.7B-Base", "estimator": "rae", "seed": 0},
