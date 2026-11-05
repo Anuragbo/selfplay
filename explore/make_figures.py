@@ -1,4 +1,4 @@
-"""Generate the report figures from the JSON files in results/ (Figs. 1-2: Check-in 1; Figs. 3-4: Check-in 2)."""
+"""Generate the report figures from the JSON files in results/ (Check-in 1: Figs. 1-2; 2: 3-4; 3: 5)."""
 
 import argparse
 import json
@@ -163,6 +163,32 @@ def kuhn_base_figure(results: Path, out: Path) -> None:
     plt.close(fig)
 
 
+def training_curves_figure(results: Path, out: Path, smooth: int = 5) -> None:
+    runs = [_load(p) for p in sorted(results.glob("train-*.json"))]
+    fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.6), dpi=200, sharex=True)
+    panels = (("invalid_move_loss_rate", "Matches lost by an invalid move (%)"),
+              ("format_error_rate", "Replies without \\boxed{} (%)"))
+    for ax, (key, title) in zip(axes, panels, strict=True):
+        for run, color in zip(runs, (BLUE, ORANGE, AQUA, MUTED), strict=False):
+            rows = run["metrics"]
+            steps = [r["step"] for r in rows]
+            values = [100 * r[key] for r in rows]
+            smoothed = [sum(values[max(0, i - smooth + 1):i + 1]) / len(values[max(0, i - smooth + 1):i + 1])
+                        for i in range(len(values))]
+            ax.plot(steps, values, color=color, lw=0.6, alpha=0.35)
+            ax.plot(steps, smoothed, color=color, lw=1.8, label=run["label"])
+        ax.set_title(title, fontsize=8, color=INK_SECONDARY)
+        ax.set_ylim(0, 105)
+        ax.set_xlabel("Training step")
+        ax.yaxis.grid(True, color=GRID, lw=0.6)
+        ax.set_axisbelow(True)
+    if runs:
+        axes[0].legend(frameon=False, fontsize=7.5, loc="lower left")
+    fig.tight_layout()
+    fig.savefig(out)
+    plt.close(fig)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("results", type=Path, help="directory with the result JSON files")
@@ -175,6 +201,7 @@ def main() -> None:
     kuhn_matchups_figure(args.results, args.figures / "fig2_kuhn_matchups.png")
     math500_base_figure(args.results, args.figures / "fig3_math500_base.png")
     kuhn_base_figure(args.results, args.figures / "fig4_kuhn_base_turns.png")
+    training_curves_figure(args.results, args.figures / "fig5_training_curves.png")
     print(f"figures written to {args.figures}")
 
 
