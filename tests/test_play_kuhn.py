@@ -46,6 +46,13 @@ def test_never_fold_model_beats_random():
     assert {m["model_pid"] for m in matches} == {0, 1}
 
 
+def test_reply_echoing_game_text_does_not_break_the_opponent():
+    """An unboxed reply containing a valid action stays in the history, including any game text it repeats."""
+    reply = "Starting round 9 and more text. Your available actions are: [fold]. I will [check] or [call]"
+    matches = play(lambda prompts, n: [[(reply, 7, "stop")] for _ in prompts], "never_fold", 20)
+    assert len(matches) == 20 and all(m["format_errors"] == m["model_turns"] for m in matches)
+
+
 def test_unformatted_reply_loses_by_invalid_move():
     matches = play(lambda prompts, n: [[("I am not sure", 7, "length")]] * len(prompts), "never_fold", 10)
     rows = {r["metric"]: r["value"] for r in summarize(matches, META)}

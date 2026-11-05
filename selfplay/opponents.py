@@ -54,18 +54,21 @@ POLICIES: dict[str, Policy] = {
 
 SCRIPTED_PREFIX = "scripted:"
 
-_HAND_START = "Starting round "
-_CARD = re.compile(r"Your card is: ([JQK])")
+_HAND_START = re.compile(r"Starting round \d+ out of \d+ rounds\.\nYour card is: ([JQK])")
 _OPENER = re.compile(r"Your card is: [JQK]\nYour available actions are:")
 _LEGAL = re.compile(r"Your available actions are: ((?:\[\w+\](?:, )?)+)")
 
 
 def parse_observation(observation: str) -> tuple[int, bool, set]:
-    """Current card, whether this player opened the current hand, and the legal actions, from the text history."""
-    hand = observation[observation.rindex(_HAND_START):]
-    card = CARD_RANKS[_CARD.search(hand).group(1)]
+    """Current card, whether this player opened the current hand, and the legal actions, from the text history.
+
+    A model's unformatted reply is echoed into the history and can repeat game text, so callers that hold the
+    environment should read its state instead (see selfplay.play_kuhn.play).
+    """
+    start = list(_HAND_START.finditer(observation))[-1]
+    hand = observation[start.start():]
     legal = set(re.findall(r"\[(\w+)\]", _LEGAL.findall(observation)[-1]))
-    return card, bool(_OPENER.search(hand)), legal
+    return CARD_RANKS[start.group(1)], bool(_OPENER.search(hand)), legal
 
 
 class ScriptedAgent:
@@ -76,9 +79,11 @@ class ScriptedAgent:
             raise ValueError(f"unknown policy {policy!r}; choose from {sorted(POLICIES)}")
         self.name, self.policy, self.rng = policy, POLICIES[policy], random.Random(seed)
 
-    def __call__(self, observation: str) -> str:
-        card, first, legal = parse_observation(observation)
+    def act(self, card: int, first: bool, legal: set) -> str:
         return self.policy(card, first, legal, self.rng)
+
+    def __call__(self, observation: str) -> str:
+        return self.act(*parse_observation(observation))
 
 
 def is_scripted(name: str | None) -> bool:

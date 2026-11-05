@@ -62,7 +62,9 @@ def play(generate: Generate, opponent: str, n_matches: int, *, seed: int = 0, ke
                 if pid == g["model_pid"]:
                     waiting.append((g, obs))
                     break
-                action = g["opponent"](obs)
+                state = g["env"].state.game_state
+                action = g["opponent"].act(state["player_cards"][pid], state["starting_player"] == pid,
+                                           set(state["current_legal_action_tree"]))
                 g["done"], _ = g["env"].step(action)
                 if g["transcript"] is not None:
                     g["transcript"].append({"pid": pid, "action": action})

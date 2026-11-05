@@ -71,6 +71,12 @@ def test_parsed_observation_matches_game_state():
             done, _ = env.step(f"[{rng.choice(sorted(legal))}]")
 
 
+def test_parser_skips_echoed_text_that_is_not_a_hand_start():
+    obs = ("[GAME] Starting round 1 out of 5 rounds.\nYour card is: K\nYour available actions are: [check], [bet]\n"
+           "[Player 1] Starting round is what I said\n[GAME] Your available actions are: [fold], [call]")
+    assert parse_observation(obs) == (K, True, {"fold", "call"})
+
+
 def test_scripted_agents_play_complete_matches():
     from selfplay.envs import SPIRAL_KUHN_ID, register_envs
 
