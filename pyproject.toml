@@ -19,4 +19,4 @@ select = ["E", "F", "W", "I", "B", "UP"]
 "notebooks/*.ipynb" = ["E401", "E501", "I001"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["benchmark_stats", "kuhn_env_explore", "make_figures", "spiral_golden_transcripts", "selfplay", "checkin2_stats"]
+known-first-party = ["benchmark_stats", "kuhn_env_explore", "make_figures", "spiral_golden_transcripts", "selfplay", "checkin2_stats", "checkin3_stats"]
