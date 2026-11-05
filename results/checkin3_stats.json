@@ -46,6 +46,53 @@
         "first": 309.1219822841417,
         "last": 206.4540105957803
       }
+    },
+    {
+      "run_id": "pilot_qwen3-1.7b_shared_s0",
+      "steps_completed": 20,
+      "window_steps": 5,
+      "seconds_per_step": 259.3750379681587,
+      "total_hours": 1.4409724331564373,
+      "invalid_move_loss_rate": {
+        "first": {
+          "rate": 0.9,
+          "ci_low": 0.8070290367910496,
+          "ci_high": 0.9929709632089504,
+          "matches": 40
+        },
+        "last": {
+          "rate": 0.7,
+          "ci_low": 0.5579845078873434,
+          "ci_high": 0.8420154921126565,
+          "matches": 40
+        }
+      },
+      "win_rate": {
+        "first": {
+          "rate": 0.05,
+          "ci_low": 0.0,
+          "ci_high": 0.11754183888524208,
+          "matches": 40
+        },
+        "last": {
+          "rate": 0.025,
+          "ci_low": 0.0,
+          "ci_high": 0.07338362326242218,
+          "matches": 40
+        }
+      },
+      "format_error_rate": {
+        "first": 0.3470634920634921,
+        "last": 0.004545454545454545
+      },
+      "truncated_rate": {
+        "first": 0.21380952380952384,
+        "last": 0.004545454545454545
+      },
+      "completion_tokens_per_turn": {
+        "first": 305.23263492063495,
+        "last": 80.31141218305504
+      }
     }
   ],
   "transfer": [
