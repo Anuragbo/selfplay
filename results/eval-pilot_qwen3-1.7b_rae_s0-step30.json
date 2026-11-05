@@ -1,0 +1,72 @@
+{
+  "run_id": "eval-pilot_qwen3-1.7b_rae_s0-step30",
+  "results": [
+    {
+      "run_id": "eval-pilot_qwen3-1.7b_rae_s0-step30",
+      "step": 30,
+      "model": "Qwen/Qwen3-1.7B-Base",
+      "game": "SpiralKuhnPoker-v1",
+      "estimator": "rae",
+      "opponent": "never_fold",
+      "seed": 0,
+      "benchmark": "MATH-500",
+      "metric": "accuracy",
+      "value": 0.622,
+      "n_samples": 1,
+      "n_problems": 500,
+      "timestamp": "2026-11-05T12:25:47Z"
+    },
+    {
+      "run_id": "eval-pilot_qwen3-1.7b_rae_s0-step30",
+      "step": 30,
+      "model": "Qwen/Qwen3-1.7B-Base",
+      "game": "SpiralKuhnPoker-v1",
+      "estimator": "rae",
+      "opponent": "never_fold",
+      "seed": 0,
+      "benchmark": "MATH-500",
+      "metric": "no_answer_rate",
+      "value": 0.028,
+      "n_samples": 1,
+      "n_problems": 500,
+      "timestamp": "2026-11-05T12:25:47Z"
+    },
+    {
+      "run_id": "eval-pilot_qwen3-1.7b_rae_s0-step30",
+      "step": 30,
+      "model": "Qwen/Qwen3-1.7B-Base",
+      "game": "SpiralKuhnPoker-v1",
+      "estimator": "rae",
+      "opponent": "never_fold",
+      "seed": 0,
+      "benchmark": "MATH-500",
+      "metric": "truncated_rate",
+      "value": 0.024,
+      "n_samples": 1,
+      "n_problems": 500,
+      "timestamp": "2026-11-05T12:25:47Z"
+    }
+  ],
+  "correct": {
+    "MATH-500": "1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,0,1,1,1,1,1,1,1,1,0,1,1,1,0,1,0,0,0,1,0,0,1,1,1,1,1,0,0,1,0,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,0,1,1,0,1,0,0,1,1,0,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,0,0,1,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,0,1,1,1,0,1,0,0,0,0,1,1,1,0,1,1,1,0,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,1,1,0,0,0,0,1,1,0,1,1,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,0,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,0,0,1,1,1,0,0,1,0,1,1,1,0,1,1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,1,0,1,1,0,0,0,0,0,0,1,1,0,0,1,0,1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,0,1,1,1,1,1,1,1,0,1,0,0,0,1,1,0,0,0,0,1,1,1,0,0,0,0,1,0,0,0,1,1,0,1,0,1,0,1,0,1,1,1,1,0,1,1,0,0,1,0,1,1,1,1,1,0,0,0,1,0,0,0,0"
+  },
+  "correct_order": "problems sorted by problem_id (string sort), one entry per problem, samples joined without separator",
+  "generation": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "max_tokens": 4096,
+    "prompt": "qwen3",
+    "samples": 1
+  },
+  "lora_step": 30,
+  "versions": {
+    "python": "3.13.16",
+    "torch": "2.14.0+cu130",
+    "vllm": "0.33.0",
+    "transformers": "5.20.2",
+    "math_verify": null,
+    "peft": "0.21.2",
+    "textarena": "0.7.4",
+    "gpu": "Tesla T4"
+  }
+}

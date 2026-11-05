@@ -1,0 +1,88 @@
+{
+  "training": [
+    {
+      "run_id": "pilot_qwen3-1.7b_rae_s0",
+      "steps_completed": 30,
+      "window_steps": 5,
+      "seconds_per_step": 241.9147661368052,
+      "total_hours": 2.0159563844733768,
+      "invalid_move_loss_rate": {
+        "first": {
+          "rate": 1.0,
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "matches": 40
+        },
+        "last": {
+          "rate": 0.275,
+          "ci_low": 0.13662379178485923,
+          "ci_high": 0.4133762082151408,
+          "matches": 40
+        }
+      },
+      "win_rate": {
+        "first": {
+          "rate": 0.0,
+          "ci_low": 0.0,
+          "ci_high": 0.0,
+          "matches": 40
+        },
+        "last": {
+          "rate": 0.0,
+          "ci_low": 0.0,
+          "ci_high": 0.0,
+          "matches": 40
+        }
+      },
+      "format_error_rate": {
+        "first": 0.37663226694186447,
+        "last": 0.007345013477088949
+      },
+      "truncated_rate": {
+        "first": 0.21445218438252495,
+        "last": 0.0
+      },
+      "completion_tokens_per_turn": {
+        "first": 309.1219822841417,
+        "last": 206.4540105957803
+      }
+    }
+  ],
+  "transfer": [
+    {
+      "run_id": "eval-pilot_qwen3-1.7b_rae_s0-step30",
+      "model": "Qwen/Qwen3-1.7B-Base",
+      "step": 30,
+      "base": {
+        "accuracy": 0.592,
+        "no_answer_rate": 0.102,
+        "truncated_rate": 0.064
+      },
+      "trained": {
+        "accuracy": 0.622,
+        "no_answer_rate": 0.028,
+        "truncated_rate": 0.024
+      },
+      "bootstrap": {
+        "mean_diff": 0.03,
+        "ci_low": -0.012,
+        "ci_high": 0.07,
+        "n": 500,
+        "n_boot": 10000,
+        "alpha": 0.05
+      },
+      "mcnemar": {
+        "only_a_correct": 47,
+        "only_b_correct": 62,
+        "discordant": 109,
+        "p_value": 0.179671070794672
+      },
+      "discordance": 0.218,
+      "detectable_effect": 0.04092600151492935,
+      "accuracy_when_answered": {
+        "base": 0.6592427616926503,
+        "trained": 0.6399176954732511
+      }
+    }
+  ]
+}
