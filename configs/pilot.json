@@ -1,0 +1,31 @@
+{
+  "_comment": "Pilot of the design in grid.json, on one T4: scripted opponent, short runs, capped replies. Differences from grid.json: 512-token replies, 8 matches per step, learning rate 1e-4, and fewer steps.",
+  "defaults": {
+    "game": "SpiralKuhnPoker-v1",
+    "opponent": "never_fold",
+    "steps": 60,
+    "matches_per_step": 8,
+    "max_new_tokens": 512,
+    "max_train_len": 2048,
+    "generation_batch_size": 16,
+    "mini_batch_size": 2,
+    "learning_rate": 1e-04,
+    "gradient_clipping": 0.2,
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "rae_tau": 0.001,
+    "format_reward": 1.5,
+    "valid_move_reward": 1.0,
+    "invalid_move_penalty": -1.0,
+    "lora": {"lora_rank": 32, "lora_alpha": 32, "lora_dropout": 0.0,
+             "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]},
+    "save_every": 5
+  },
+  "runs": [
+    {"run_id": "pilot_qwen3-1.7b_rae_s0", "model": "Qwen/Qwen3-1.7B-Base", "estimator": "rae", "seed": 0},
+    {"run_id": "pilot_qwen3-1.7b_shared_s0", "model": "Qwen/Qwen3-1.7B-Base", "estimator": "shared", "seed": 0},
+    {"run_id": "pilot_qwen3-1.7b_rae_s1", "model": "Qwen/Qwen3-1.7B-Base", "estimator": "rae", "seed": 1},
+    {"run_id": "pilot_qwen3-1.7b_shared_s1", "model": "Qwen/Qwen3-1.7B-Base", "estimator": "shared", "seed": 1},
+    {"run_id": "pilot_qwen3-4b_rae_s0", "model": "Qwen/Qwen3-4B-Base", "estimator": "rae", "seed": 0, "mini_batch_size": 1}
+  ]
+}
