@@ -61,30 +61,40 @@ def hf_generator(args) -> Generate:
 
     tok = AutoTokenizer.from_pretrained(args.model, padding_side="left")
     tok.pad_token = tok.pad_token or tok.eos_token
-    model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=getattr(torch, args.dtype), device_map="auto")
+    model = AutoModelForCausalLM.from_pretrained(args.model, dtype=getattr(torch, args.dtype), device_map="auto")
     if args.lora:
         from peft import PeftModel
 
         model = PeftModel.from_pretrained(model, args.lora)
     model.eval()
     torch.manual_seed(args.seed)
-    stop_ids = {tok.pad_token_id, tok.eos_token_id}
+    return hf_generate_fn(model, tok, max_tokens=args.max_tokens, temperature=args.temperature, top_p=args.top_p,
+                          batch_size=args.hf_batch_size)
+
+
+def hf_generate_fn(model, tok, *, max_tokens: int, temperature: float, top_p: float, batch_size: int) -> Generate:
+    """Batched sampling from an already loaded model; tok must pad on the left."""
+    import torch
+
+    configured = model.generation_config.eos_token_id
+    configured = configured if isinstance(configured, list) else [configured]
+    stop_ids = {tok.pad_token_id, tok.eos_token_id, *configured}
 
     def generate(prompts: list[str], n: int):
         results = []
-        for i in range(0, len(prompts), args.hf_batch_size):
-            batch = tok(prompts[i:i + args.hf_batch_size], return_tensors="pt", padding=True).to(model.device)
-            sample = args.temperature > 0
+        for i in range(0, len(prompts), batch_size):
+            batch = tok(prompts[i:i + batch_size], return_tensors="pt", padding=True).to(model.device)
+            sample = temperature > 0
             with torch.no_grad():
-                out = model.generate(**batch, max_new_tokens=args.max_tokens, do_sample=sample, num_return_sequences=n,
-                                     temperature=args.temperature if sample else None,
-                                     top_p=args.top_p if sample else None, pad_token_id=tok.pad_token_id)
+                out = model.generate(**batch, max_new_tokens=max_tokens, do_sample=sample, num_return_sequences=n,
+                                     temperature=temperature if sample else None,
+                                     top_p=top_p if sample else None, pad_token_id=tok.pad_token_id)
             new = out[:, batch["input_ids"].shape[1]:].tolist()
             for j in range(0, len(new), n):
                 group = []
                 for seq in new[j:j + n]:
                     ids = next((seq[:k] for k, t in enumerate(seq) if t in stop_ids), seq)
-                    finish = "length" if len(ids) >= args.max_tokens else "stop"
+                    finish = "length" if len(ids) >= max_tokens else "stop"
                     group.append((tok.decode(ids, skip_special_tokens=True), len(ids), finish))
                 results.append(group)
         return results

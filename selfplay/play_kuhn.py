@@ -75,7 +75,7 @@ def play(generate: Generate, opponent: str, n_matches: int, *, seed: int = 0, ke
             g["turns"].append({"formatted": formatted, "tokens": n_tokens, "truncated": finish == "length"})
             if g["transcript"] is not None:
                 g["transcript"].append({"pid": g["model_pid"], "observation": obs, "completion": text,
-                                        "action": action})
+                                        "action": action, "finish_reason": finish})
 
     matches = []
     for i, g in enumerate(games):
