@@ -3,6 +3,7 @@ checkpoints/
 wandb/
 outputs/
 docs/
+local_folder/
 
 __pycache__/
 *.pyc
