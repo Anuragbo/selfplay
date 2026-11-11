@@ -93,6 +93,8 @@ per match, so results are reproducible exactly.
 
 ## Running the pipeline
 
+To run the next experiments on Colab (setup, resuming runs, packing results), follow `RUNBOOK.md`.
+
 ```bash
 # Benchmarks and base-model game play (GPU; on Colab use notebooks/ 00 -> 08 -> 09)
 pip install -r requirements-gpu.txt
