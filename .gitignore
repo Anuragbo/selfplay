@@ -2,7 +2,6 @@ data/raw/
 checkpoints/
 wandb/
 outputs/
-docs/
 local_folder/
 
 __pycache__/
