@@ -58,3 +58,27 @@ def test_unformatted_reply_loses_by_invalid_move():
     rows = {r["metric"]: r["value"] for r in summarize(matches, META)}
     assert rows["win_rate"] == 0 and rows["loss_by_invalid_move_rate"] == 1 and rows["format_error_rate"] == 1
     assert rows["model_turns_per_match"] == 1 and rows["truncated_rate"] == 1
+
+
+def test_self_play_gives_one_row_per_seat_with_opposite_rewards():
+    matches = play(_scripted_model("never_fold"), "self", 20, keep_transcripts=20)
+    assert len(matches) == 40 and {m["opponent"] for m in matches} == {"self"}
+    for a, b in zip(matches[::2], matches[1::2], strict=True):
+        assert a["match"] == b["match"] and (a["model_pid"], b["model_pid"]) == (0, 1)
+        assert a["reward"] == -b["reward"] and a["transcript"] is b["transcript"]
+        seats = [t["pid"] for t in a["transcript"] if "completion" in t]
+        assert seats.count(0) == a["model_turns"] and seats.count(1) == b["model_turns"]
+
+
+def test_self_play_invalid_move_loses_for_that_seat_only():
+    legal = _scripted_model("never_fold")
+
+    def generate(prompts, n):  # seat 0 answers nonsense, seat 1 plays never_fold
+        return [[(r"\boxed{dance}", 3, "stop")] if "You are Player 0" in p else legal([p], n)[0] for p in prompts]
+
+    matches = play(generate, "self", 10)
+    seat0 = [m for m in matches if m["model_pid"] == 0]
+    seat1 = [m for m in matches if m["model_pid"] == 1]
+    assert all(m["lost_by_invalid_move"] and m["reward"] == -1 for m in seat0)
+    assert not any(m["lost_by_invalid_move"] for m in seat1)
+    assert all(m["reward"] == 0 for m in seat1)  # SPIRAL's rules: the other seat gets 0, not +1

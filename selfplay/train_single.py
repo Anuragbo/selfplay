@@ -1,19 +1,31 @@
-"""Train LoRA adapters with REINFORCE on one GPU, against a scripted Kuhn Poker opponent.
+"""Train LoRA adapters with REINFORCE on one GPU, against a scripted Kuhn Poker opponent or in self-play.
 
 One model copy alternates between playing matches and updating the adapter, so the loop fits a single 15 GB T4 in
 fp16. Rewards follow UnstableBaselines: the match reward goes through the advantage estimator, each reply then gets
 +1.5 for a \\boxed{} answer and +1 for a valid move or -1 for an invalid one, and rewards are z-scored per batch.
 
-Checkpoints go to {checkpoints}/{run_id}/step_{N}/ with a run_config.json. A run resumes from its newest complete
-checkpoint, and metrics.jsonl gets one row per training step.
+With "opponent": "self" the current policy plays both seats and every reply of both seats is trained on; the
+estimator sees each seat's match reward once, so RAE keeps one baseline per seat. Self-play win rates are about 0.5
+by construction, so a run can also play "eval_matches" matches against "eval_opponent" every "eval_every" steps
+(same sampling settings, the same match seeds each time) and log them as eval_* metrics.
+
+Checkpoints go to {checkpoints}/{run_id}/step_{N}/ with a run_config.json, every "save_every" steps, at the last step,
+when --max-seconds runs out, and on a requested stop. A run resumes from its newest complete checkpoint when started
+again with the same command, and metrics.jsonl gets one row per training step.
+
+Stopping: the first Ctrl-c (or SIGTERM) lets the current step finish, saves it and exits, so no finished step is lost;
+a second Ctrl-c stops at once, losing the steps since the last checkpoint.
 
     python -m selfplay.train_single --config configs/pilot.json --list
     python -m selfplay.train_single --config configs/pilot.json --run-id pilot_qwen3-1.7b_rae_s0
+    python -m selfplay.train_single --config configs/selfplay.json --run-id selfplay_qwen3-1.7b_rae_s0
 """
 
 import argparse
 import json
 import random
+import signal
+import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -21,9 +33,10 @@ from pathlib import Path
 from selfplay.advantages import NormalizeRewardsByEnv, make_estimator
 from selfplay.envs import SPIRAL_KUHN_ID
 from selfplay.generation import Generate, hf_generate_fn, versions
-from selfplay.play_kuhn import QWEN3_ZS, extract_action, play
+from selfplay.play_kuhn import QWEN3_ZS, SELF, extract_action, play
 
 COMPLETE_MARKER = "complete"
+EVAL_SEED_OFFSET = 900_000  # eval match seeds: seed * 1e6 + this, clear of the training seeds below it
 METRICS_FILE = "metrics.jsonl"
 
 
@@ -41,7 +54,7 @@ def examples_from_matches(matches: list[dict], estimator, run: dict) -> list[Exa
     examples = []
     for match in matches:
         advantage = estimator(match["reward"], match["model_pid"], SPIRAL_KUHN_ID)
-        turns = [t for t in match["transcript"] if "completion" in t]
+        turns = [t for t in match["transcript"] if "completion" in t and t["pid"] == match["model_pid"]]
         for k, turn in enumerate(turns):
             invalid = match["lost_by_invalid_move"] and k == len(turns) - 1
             _, formatted = extract_action(turn["completion"])
@@ -53,9 +66,10 @@ def examples_from_matches(matches: list[dict], estimator, run: dict) -> list[Exa
 
 
 def rollout_metrics(matches: list[dict]) -> dict:
+    """Rates per seat played by the model; self-play rows (two per match) add per-match and per-seat rates."""
     n, turns = len(matches), sum(m["model_turns"] for m in matches)
-    return {
-        "matches": n,
+    row = {
+        "matches": len({m["match"] for m in matches}) if "match" in matches[0] else n,
         "win_rate": sum(m["reward"] > 0 for m in matches) / n,
         "invalid_move_loss_rate": sum(m["lost_by_invalid_move"] for m in matches) / n,
         "format_error_rate": sum(m["format_errors"] for m in matches) / max(turns, 1),
@@ -63,6 +77,29 @@ def rollout_metrics(matches: list[dict]) -> dict:
         "model_turns_per_match": turns / n,
         "completion_tokens_per_turn": sum(m["completion_tokens"] for m in matches) / max(turns, 1),
     }
+    if matches[0].get("opponent") == SELF:
+        by_match: dict[int, list[dict]] = {}
+        for m in matches:
+            by_match.setdefault(m["match"], []).append(m)
+        games = list(by_match.values())
+        seat0 = [m for m in matches if m["model_pid"] == 0]
+        row.update({
+            "invalid_move_match_rate": sum(any(m["lost_by_invalid_move"] for m in g) for g in games) / len(games),
+            # an invalid move gives that seat -1 and the other 0, so a 0 alone is not a draw
+            "draw_rate": sum(all(m["reward"] == 0 and not m["lost_by_invalid_move"] for m in g) for g in games)
+            / len(games),
+            "seat0_win_rate": sum(m["reward"] > 0 for m in seat0) / max(len(seat0), 1),
+        })
+    return row
+
+
+def eval_metrics(generate: Generate, run: dict) -> dict:
+    """Matches against the fixed eval opponent, prefixed eval_ (empty unless the run configures them)."""
+    if not run.get("eval_matches") or not run.get("eval_opponent"):
+        return {}
+    matches = play(generate, run["eval_opponent"], run["eval_matches"],
+                   seed=run["seed"] * 1_000_000 + EVAL_SEED_OFFSET)
+    return {f"eval_{k}": v for k, v in rollout_metrics(matches).items()}
 
 
 def latest_checkpoint(run_dir: Path) -> tuple[int, Path] | None:
@@ -213,6 +250,31 @@ def load_checkpoint(path: Path, model, optimizer, scaler, estimator) -> int:
     return state["step"]
 
 
+class GracefulStop:
+    """While active, the first SIGINT or SIGTERM only sets .requested; a second SIGINT raises KeyboardInterrupt."""
+
+    SIGNALS = (signal.SIGINT, signal.SIGTERM)
+
+    def __init__(self):
+        self.requested = False
+        self._previous = {}
+
+    def __enter__(self):
+        if threading.current_thread() is threading.main_thread():  # handlers can only be set there
+            self._previous = {s: signal.signal(s, self._handle) for s in self.SIGNALS}
+        return self
+
+    def __exit__(self, *exc):
+        for s, handler in self._previous.items():
+            signal.signal(s, handler)
+
+    def _handle(self, signum, frame):
+        if self.requested:
+            raise KeyboardInterrupt
+        self.requested = True
+        print("stop requested: finishing this step, then saving (Ctrl-c again to quit now)", flush=True)
+
+
 def train(run: dict, model, tok, run_dir: Path, *, generate: Generate | None = None, device: str = "cuda",
           max_seconds: float | None = None) -> int:
     """Train until run["steps"] or max_seconds; returns the last completed step."""
@@ -240,23 +302,41 @@ def train(run: dict, model, tok, run_dir: Path, *, generate: Generate | None = N
     rewind_metrics(run_dir, step)
 
     started = time.time()
-    while step < run["steps"] and (max_seconds is None or time.time() - started < max_seconds):
-        t0 = time.time()
-        matches = play(generate, run["opponent"], run["matches_per_step"], seed=run["seed"] * 1_000_000 + step * 1000,
-                       keep_transcripts=run["matches_per_step"])
-        t1 = time.time()
-        examples = normalize(examples_from_matches(matches, estimator, run))
-        update = reinforce_update(model, tok, examples, optimizer, scaler, run)
-        step += 1
-        row = {"step": step, **rollout_metrics(matches), **update, "rollout_seconds": t1 - t0,
-               "update_seconds": time.time() - t1}
-        with (run_dir / METRICS_FILE).open("a", encoding="utf-8") as f:
-            f.write(json.dumps(row) + "\n")
-        print(f"step {step}: invalid {row['invalid_move_loss_rate']:.2f} win {row['win_rate']:.2f} "
-              f"format-err {row['format_error_rate']:.2f} loss {row['loss']:.4f} "
-              f"{row['rollout_seconds']:.0f}s+{row['update_seconds']:.0f}s", flush=True)
-        if step % run["save_every"] == 0 or step == run["steps"]:
-            save_checkpoint(run_dir, step, model, optimizer, scaler, estimator, run)
+    with GracefulStop() as stop:
+        while step < run["steps"] and not stop.requested and not _out_of_time(started, max_seconds):
+            step = _train_step(run, model, tok, run_dir, step, generate, estimator, normalize, optimizer, scaler)
+            if (step % run["save_every"] == 0 or step == run["steps"] or stop.requested
+                    or _out_of_time(started, max_seconds)):
+                save_checkpoint(run_dir, step, model, optimizer, scaler, estimator, run)
+                print(f"saved step {step}", flush=True)
+    return step
+
+
+def _out_of_time(started: float, max_seconds: float | None) -> bool:
+    return max_seconds is not None and time.time() - started >= max_seconds
+
+
+def _train_step(run, model, tok, run_dir, step, generate, estimator, normalize, optimizer, scaler) -> int:
+    """Play, update and log one step; returns the new step number."""
+    t0 = time.time()
+    matches = play(generate, run["opponent"], run["matches_per_step"], seed=run["seed"] * 1_000_000 + step * 1000,
+                   keep_transcripts=run["matches_per_step"])
+    t1 = time.time()
+    examples = normalize(examples_from_matches(matches, estimator, run))
+    update = reinforce_update(model, tok, examples, optimizer, scaler, run)
+    step += 1
+    row = {"step": step, **rollout_metrics(matches), **update, "rollout_seconds": t1 - t0,
+           "update_seconds": time.time() - t1}
+    if run.get("eval_every") and (step % run["eval_every"] == 0 or step == run["steps"]):
+        t2 = time.time()
+        row.update(eval_metrics(generate, run), eval_seconds=time.time() - t2)  # before the save: resumable RNG
+    with (run_dir / METRICS_FILE).open("a", encoding="utf-8") as f:
+        f.write(json.dumps(row) + "\n")
+    print(f"step {step}: invalid {row['invalid_move_loss_rate']:.2f} win {row['win_rate']:.2f} "
+          f"format-err {row['format_error_rate']:.2f} loss {row['loss']:.4f} "
+          f"{row['rollout_seconds']:.0f}s+{row['update_seconds']:.0f}s"
+          + (f" | eval win {row['eval_win_rate']:.2f} invalid {row['eval_invalid_move_loss_rate']:.2f}"
+             if "eval_win_rate" in row else ""), flush=True)
     return step
 
 

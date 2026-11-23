@@ -39,28 +39,38 @@ def extract_action(raw: str) -> tuple[str, bool]:
     return raw, False
 
 
+SELF = "self"  # opponent name for self-play: the model plays both seats
+
+
 def play(generate: Generate, opponent: str, n_matches: int, *, seed: int = 0, keep_transcripts: int = 0,
          make_env=None) -> list[dict]:
-    """Play n_matches between the model and one scripted opponent; returns one summary dict per match."""
+    """Play n_matches between the model and one scripted opponent; returns one summary dict per match.
+
+    With opponent == "self" the model plays both seats and each match gives two rows, one per seat, with the same
+    "match" index; each row's transcript holds the whole match and its model_pid names the seat it describes.
+    """
     import textarena as ta
 
     register_envs()
     make_env = make_env or (lambda: ta.make(SPIRAL_KUHN_ID))
+    self_play = opponent == SELF
     games = []
     for i in range(n_matches):
         env = make_env()
         env.reset(num_players=2, seed=seed + i)
         env.state.error_allowance = 0
-        games.append({"env": env, "model_pid": i % 2, "opponent": ScriptedAgent(opponent, seed=seed + i),
-                      "done": False, "turns": [], "transcript": [] if i < keep_transcripts else None})
+        games.append({"env": env, "model_pids": (0, 1) if self_play else (i % 2,),
+                      "opponent": None if self_play else ScriptedAgent(opponent, seed=seed + i),
+                      "done": False, "turns": {0: [], 1: []},
+                      "transcript": [] if i < keep_transcripts else None})
 
     while True:
         waiting = []
         for g in games:
             while not g["done"]:
                 pid, obs = g["env"].get_observation()
-                if pid == g["model_pid"]:
-                    waiting.append((g, obs))
+                if pid in g["model_pids"]:
+                    waiting.append((g, pid, obs))
                     break
                 state = g["env"].state.game_state
                 action = g["opponent"].act(state["player_cards"][pid], state["starting_player"] == pid,
@@ -70,27 +80,28 @@ def play(generate: Generate, opponent: str, n_matches: int, *, seed: int = 0, ke
                     g["transcript"].append({"pid": pid, "action": action})
         if not waiting:
             break
-        outputs = generate([QWEN3_ZS.format(obs=obs) for _, obs in waiting], 1)
-        for (g, obs), [(text, n_tokens, finish)] in zip(waiting, outputs, strict=True):
+        outputs = generate([QWEN3_ZS.format(obs=obs) for _, _, obs in waiting], 1)
+        for (g, pid, obs), [(text, n_tokens, finish)] in zip(waiting, outputs, strict=True):
             action, formatted = extract_action(text)
             g["done"], _ = g["env"].step(action)
-            g["turns"].append({"formatted": formatted, "tokens": n_tokens, "truncated": finish == "length"})
+            g["turns"][pid].append({"formatted": formatted, "tokens": n_tokens, "truncated": finish == "length"})
             if g["transcript"] is not None:
-                g["transcript"].append({"pid": g["model_pid"], "observation": obs, "completion": text,
+                g["transcript"].append({"pid": pid, "observation": obs, "completion": text,
                                         "action": action, "finish_reason": finish})
 
     matches = []
     for i, g in enumerate(games):
         rewards, game_info = g["env"].close()
-        me = g["model_pid"]
-        matches.append({
-            "match": i, "seed": seed + i, "opponent": opponent, "model_pid": me, "reward": rewards[me],
-            "lost_by_invalid_move": bool(game_info[me]["invalid_move"]), "model_turns": len(g["turns"]),
-            "format_errors": sum(not t["formatted"] for t in g["turns"]),
-            "truncated": sum(t["truncated"] for t in g["turns"]),
-            "completion_tokens": sum(t["tokens"] for t in g["turns"]),
-            **({"transcript": g["transcript"]} if g["transcript"] is not None else {}),
-        })
+        for me in g["model_pids"]:
+            turns = g["turns"][me]
+            matches.append({
+                "match": i, "seed": seed + i, "opponent": opponent, "model_pid": me, "reward": rewards[me],
+                "lost_by_invalid_move": bool(game_info[me]["invalid_move"]), "model_turns": len(turns),
+                "format_errors": sum(not t["formatted"] for t in turns),
+                "truncated": sum(t["truncated"] for t in turns),
+                "completion_tokens": sum(t["tokens"] for t in turns),
+                **({"transcript": g["transcript"]} if g["transcript"] is not None else {}),
+            })
     return matches
 
 
@@ -117,7 +128,7 @@ def summarize(matches: list[dict], meta: dict) -> list[dict]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     add_generation_args(parser, max_tokens=2048)
-    parser.add_argument("--opponents", nargs="+", default=["never_fold"], choices=sorted(POLICIES))
+    parser.add_argument("--opponents", nargs="+", default=["never_fold"], choices=[*sorted(POLICIES), SELF])
     parser.add_argument("--matches", type=int, default=200, help="matches per opponent")
     parser.add_argument("--transcripts", type=int, default=5, help="matches per opponent kept in full")
     parser.add_argument("--out-dir", type=Path, required=True)
@@ -147,7 +158,9 @@ def main() -> None:
         for m in matches:
             transcript = m.pop("transcript", None)
             f.write(json.dumps(m) + "\n")
-            if transcript is not None:
+            if transcript is not None and m["model_pid"] == min(x["model_pid"] for x in matches
+                                                                if x["match"] == m["match"]
+                                                                and x["opponent"] == m["opponent"]):
                 t.write(json.dumps({"match": m["match"], "opponent": m["opponent"], "turns": transcript}) + "\n")
     (args.out_dir / "results.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
 
