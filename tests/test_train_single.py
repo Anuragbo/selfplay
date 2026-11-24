@@ -76,7 +76,8 @@ def test_pilot_config_runs_are_valid():
 
 
 def _self_match(i, reward0, lost0=False):
-    transcript = [{"pid": 0, "observation": "a", "completion": r"\boxed{bet}", "action": "[bet]", "finish_reason": "stop"},
+    transcript = [{"pid": 0, "observation": "a", "completion": r"\boxed{bet}", "action": "[bet]",
+                   "finish_reason": "stop"},
                   {"pid": 1, "observation": "b", "completion": "no box", "action": "x", "finish_reason": "stop"}]
     base = {"match": i, "opponent": "self", "transcript": transcript, "model_turns": 1, "format_errors": 0,
             "truncated": 0, "completion_tokens": 5}
