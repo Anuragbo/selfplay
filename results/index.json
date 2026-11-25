@@ -795,5 +795,12 @@
     "note": "reply-length collapse",
     "gpu": "NVIDIA H100 PCIe",
     "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "transcript_audit.json",
+    "kind": "support",
+    "description": "Replayed Kuhn Poker replies per checkpoint (explore/transcript_audit.py)",
+    "gpu": null,
+    "source": ""
   }
 ]

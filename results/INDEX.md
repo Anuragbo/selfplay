@@ -76,3 +76,4 @@ Runs repeated on other hardware get a hardware suffix, e.g. `train-<run_id>-rtx5
 | `kuhn_textarena_fixed.json` | Scripted-policy matchups, corrected stakes control (Check-in 1) |
 | `seed_stats.json` | Per-arm MATH-500 effects pooled over seeds (explore/seed_stats.py) |
 | `seed_stats_suite.json` | Per-arm effects on the six-benchmark suite pooled over seeds and benchmarks (explore/seed_stats.py --suffix=-suite --benchmark pooled) |
+| `transcript_audit.json` | Replayed Kuhn Poker replies per checkpoint (explore/transcript_audit.py) |

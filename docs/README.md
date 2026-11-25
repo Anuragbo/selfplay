@@ -143,11 +143,26 @@ seed-to-seed variation. A t interval over the seed means is far wider: about ±5
    Check-in 4 were seed variance.
 4. **Where accuracy rises, most of the gain is formatting.** The runs above the base cut the no-answer rate from 10.8%
    to 3.4–4.6%. Accuracy on answered problems barely moves (65.9% base, 66.3% for self-play RAE s1).
-5. **Early truncation explains the first drop in length, but not the full collapse.** In steps 1–5, 21–62% of game
-   replies hit the 512-token cap. A truncated reply has no `\boxed{}` answer, so it loses both the format bonus and
-   the match. By steps 6–15 this falls to 7–18% in every run. Early truncation does not predict which runs go on to
-   collapse: self-play shared s0 had the most early truncation (62%) and did not. A transcript audit (replaying
-   checkpoints 10, 20 and 30 of every run) is under way to see what drives the rest.
+5. **The collapse is what the game's reward asks for (transcript audit).** We replayed checkpoints 10, 20 and 30 of
+   every run, plus the base model, for 64 matches each against never_fold with the training sampling settings
+   (`results/transcript_audit.json`).
+   - At step 10, every run still loses 67–100% of matches to invalid moves. These are mostly actions that are
+     illegal in the current position, such as `[check]` when facing a bet: the reply reasons about an earlier hand
+     in the history. By steps 20 and 30, at most 5% of replies are truncated.
+   - The fully collapsed checkpoints answer with nothing but the boxed action. Self-play shared s1 at step 30 is
+     exactly the never_fold policy: `\boxed{[bet]}` when it can bet and `\boxed{[call]}` when facing a bet, whatever
+     its card, with no invalid moves and 44% wins. Across the three checkpoints with only bare replies, invalid moves
+     are 0–34% and wins 30–50%.
+   - The cause is SPIRAL's KuhnPoker-v1 rules, which we kept for fidelity (`results/kuhn_spiral.json`): bets do not
+     change the stakes, and the match goes to the winner of the final hand. Against never_fold, every hand reaches
+     showdown unless the model folds, so no policy can win more than about half of the matches, and any policy that
+     never folds and never makes an invalid move gets there. Reasoning only adds the risk of an invalid move.
+   - No trained checkpoint plays its card consistently: the gap between how often it bets or calls with a K and with
+     a J ranges from −0.44 to +0.52 and changes sign between steps and seeds. The base model, when opening, bets
+     with a K far more often than with a J (+0.72), but loses every match to invalid moves.
+   - Early truncation adds to the first drop in length. In steps 1–5, 21–62% of training replies hit the 512-token
+     cap, and a truncated reply has no `\boxed{}`, so it loses the format bonus and the match. This falls to 7–18%
+     by steps 6–15 in every run.
 6. **Exploratory only (the subset was chosen after seeing the results):** among the five runs that did not collapse,
    self-play scores +6.1 points (+1.1, +11.3) above the pilot runs. A run designed to prevent the collapse would be
    needed to test this.
@@ -156,9 +171,13 @@ seed-to-seed variation. A t interval over the seed means is far wider: about ±5
 
 1. ~~Self-play shared baseline, seed 0~~ — done (H100, 62.4%).
 2. ~~Seeds 1 and 2 for all four arms~~ — done (H100). The three 5080 seed-0 runs are still to be added to `results/`.
-3. **Prevent the length collapse** (KL penalty to the base model, or a length-aware reward), then **longer runs
-   (60–100 steps)**, possibly with a larger τ. Without the fix, longer runs would mostly measure the collapse.
-4. **Transcript audit**: under way (`hpc/audit.sbatch`, `explore/transcript_audit.py`).
+3. **Prevent the length collapse:** running. Self-play with a KL penalty to the base model (`kl_coef` 0.05,
+   `configs/selfplay_kl.json`), 60 steps, RAE and shared × seeds 0–2, evaluated at steps 30 and 60. The KL term
+   can keep replies long, but it does not make reasoning pay off in this game (finding 5).
+4. ~~Transcript audit~~ — done (finding 5). Because the game itself rewards a reasoning-free policy, a fair test of
+   transfer needs a game where the decisions matter: for example Kuhn Poker with standard stakes (a called bet
+   doubles the pot, and the match goes to the chip leader), the variant profiled in Check-in 1
+   (`results/kuhn_textarena_fixed.json`).
 5. **Full math suite** (six benchmarks) on the base model and the nine H100 checkpoints: queued
    (`*-suite` results).
 6. ~~Move results into `results/`~~ — H100 results are in `results/` and labelled (`results/INDEX.md`); pooled
