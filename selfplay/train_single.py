@@ -146,29 +146,49 @@ def encode_batch(examples: list[Example], tok, max_train_len: int):
     return input_ids, attention, reply_mask
 
 
+def _reply_token_log_probs(model, input_ids, attention, targets, scaler):
+    """Log-probability of each reply token (flattened over the batch), computing logits at reply positions only."""
+    import torch
+
+    base = model.get_base_model()
+    with torch.autocast(device_type=model.device.type, dtype=torch.float16, enabled=scaler.is_enabled()):
+        hidden = base.model(input_ids=input_ids, attention_mask=attention, use_cache=False).last_hidden_state
+        logits = base.lm_head(hidden[:, :-1][targets])  # reply positions only: a full-vocab tensor is huge
+    log_probs = torch.log_softmax(logits.float(), dim=-1)
+    return log_probs.gather(-1, input_ids[:, 1:][targets].unsqueeze(-1)).squeeze(-1)
+
+
 def reinforce_update(model, tok, examples: list[Example], optimizer, scaler, run: dict) -> dict:
-    """One optimizer step over all examples, in mini-batches of similar length."""
+    """One optimizer step over all examples, in mini-batches of similar length.
+
+    With run["kl_coef"] > 0 the loss adds kl_coef times a per-token estimate of KL(policy || base model), the
+    non-negative k3 estimator used by GRPO, on the sampled reply tokens. The base model is the same network with the
+    LoRA adapter switched off, so it needs no extra memory. Both terms are summed over reply tokens and divided by
+    max_new_tokens, so kl_coef weighs a token's KL against its reward-weighted log-probability, as GRPO's beta does.
+    """
     import torch
 
     model.train()
     optimizer.zero_grad(set_to_none=True)
     ordered = sorted(examples, key=lambda e: len(e.prompt) + len(e.reply))
-    device_type = model.device.type
-    total_loss = 0.0
+    kl_coef = run.get("kl_coef", 0.0)
+    total_loss, kl_sum, kl_tokens = 0.0, 0.0, 0
     for start in range(0, len(ordered), run["mini_batch_size"]):
         chunk = ordered[start:start + run["mini_batch_size"]]
         input_ids, attention, reply_mask = (t.to(model.device) for t in encode_batch(chunk, tok, run["max_train_len"]))
         rewards = torch.tensor([e.reward for e in chunk], dtype=torch.float32, device=model.device)
         targets = reply_mask[:, 1:]
-        base = model.get_base_model()
-        with torch.autocast(device_type=device_type, dtype=torch.float16, enabled=scaler.is_enabled()):
-            hidden = base.model(input_ids=input_ids, attention_mask=attention, use_cache=False).last_hidden_state
-            logits = base.lm_head(hidden[:, :-1][targets])  # reply positions only: a full-vocab tensor is huge
-        log_probs = torch.log_softmax(logits.float(), dim=-1)
-        token_log_probs = log_probs.gather(-1, input_ids[:, 1:][targets].unsqueeze(-1)).squeeze(-1)
+        token_log_probs = _reply_token_log_probs(model, input_ids, attention, targets, scaler)
         rows = targets.nonzero()[:, 0]
         reply_log_prob = torch.zeros(len(chunk), device=model.device).index_add(0, rows, token_log_probs)
         loss = -(rewards * reply_log_prob / run["max_new_tokens"]).sum() / len(ordered)
+        if kl_coef > 0:
+            with torch.no_grad(), model.disable_adapter():
+                ref_log_probs = _reply_token_log_probs(model, input_ids, attention, targets, scaler)
+            log_ratio = ref_log_probs - token_log_probs
+            kl = torch.exp(log_ratio) - log_ratio - 1  # k3: unbiased, >= 0
+            loss = loss + kl_coef * kl.sum() / run["max_new_tokens"] / len(ordered)
+            kl_sum, kl_tokens = kl_sum + kl.detach().sum().item(), kl_tokens + kl.numel()
         scaler.scale(loss).backward()
         total_loss += loss.item()
     scaler.unscale_(optimizer)
@@ -177,7 +197,10 @@ def reinforce_update(model, tok, examples: list[Example], optimizer, scaler, run
     scaler.step(optimizer)
     scaler.update()
     model.eval()
-    return {"loss": total_loss, "grad_norm": float(grad_norm), "examples": len(ordered)}
+    stats = {"loss": total_loss, "grad_norm": float(grad_norm), "examples": len(ordered)}
+    if kl_coef > 0:
+        stats["kl_per_token"] = kl_sum / max(kl_tokens, 1)
+    return stats
 
 
 def build_model(run: dict, device: str = "cuda"):

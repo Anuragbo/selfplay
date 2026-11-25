@@ -22,9 +22,11 @@ import numpy as np
 from results_index import COLLAPSE_TOKENS, build
 
 ARMS = [("self-play", "rae"), ("self-play", "shared"), ("pilot vs never_fold", "rae"),
-        ("pilot vs never_fold", "shared")]
+        ("pilot vs never_fold", "shared"), ("self-play + KL", "rae"), ("self-play + KL", "shared")]
 FACTORS = {"self-play minus pilot": ("arm", "self-play", "pilot vs never_fold"),
-           "RAE minus shared": ("estimator", "rae", "shared")}
+           "RAE minus shared": ("estimator", "rae", "shared"),
+           "self-play + KL minus self-play": ("arm", "self-play + KL", "self-play")}
+DESIGN_ARMS = {"self-play", "pilot vs never_fold"}  # the original 2x2: used by the estimator contrast and the pool
 T95 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228}
 
 
@@ -122,11 +124,13 @@ def analyse(results: Path, gpu: str, suffix: str, benchmark: str) -> dict:
                 arms.append({"arm": arm, "estimator": estimator,
                              **summarize_group(group, base_scores, strata, results, benchmark)})
         factors = {}
+        design = [r for r in selected if r["arm"] in DESIGN_ARMS]
         for label, (key, left, right) in FACTORS.items():
-            a, b = [r for r in selected if r[key] == left], [r for r in selected if r[key] == right]
+            pool = selected if key == "arm" else design
+            a, b = [r for r in pool if r[key] == left], [r for r in pool if r[key] == right]
             if a and b:
                 factors[label] = contrast(a, b, base_scores, strata, results, benchmark)
-        overall = summarize_group(selected, base_scores, strata, results, benchmark) if selected else None
+        overall = summarize_group(design, base_scores, strata, results, benchmark) if design else None
         return {"arms": arms, "factors": factors, "all_trained_runs": overall}
 
     per_run = []

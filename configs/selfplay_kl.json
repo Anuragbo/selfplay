@@ -1,0 +1,78 @@
+{
+  "_comment": "Self-play with a KL penalty to the base model (Check-in 5): identical to selfplay.json except kl_coef = 0.05 (per-token k3 estimate of KL(policy || base), weighted like GRPO's beta; see train_single.reinforce_update) and 60 steps instead of 30. The penalty targets the reply-length collapse seen in 4 of 9 runs without it. Checkpoints every 10 steps, so step 30 compares directly with the runs without the penalty and step 60 is the longer run.",
+  "defaults": {
+    "game": "SpiralKuhnPoker-v1",
+    "opponent": "self",
+    "steps": 60,
+    "matches_per_step": 8,
+    "max_new_tokens": 512,
+    "max_train_len": 2048,
+    "generation_batch_size": 16,
+    "mini_batch_size": 2,
+    "learning_rate": 0.0001,
+    "gradient_clipping": 0.2,
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "rae_tau": 0.001,
+    "format_reward": 1.5,
+    "valid_move_reward": 1.0,
+    "invalid_move_penalty": -1.0,
+    "lora": {
+      "lora_rank": 32,
+      "lora_alpha": 32,
+      "lora_dropout": 0.0,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "save_every": 10,
+    "eval_opponent": "never_fold",
+    "eval_matches": 32,
+    "eval_every": 10,
+    "kl_coef": 0.05
+  },
+  "runs": [
+    {
+      "run_id": "selfplay-kl_qwen3-1.7b_rae_s0",
+      "model": "Qwen/Qwen3-1.7B-Base",
+      "estimator": "rae",
+      "seed": 0
+    },
+    {
+      "run_id": "selfplay-kl_qwen3-1.7b_shared_s0",
+      "model": "Qwen/Qwen3-1.7B-Base",
+      "estimator": "shared",
+      "seed": 0
+    },
+    {
+      "run_id": "selfplay-kl_qwen3-1.7b_rae_s1",
+      "model": "Qwen/Qwen3-1.7B-Base",
+      "estimator": "rae",
+      "seed": 1
+    },
+    {
+      "run_id": "selfplay-kl_qwen3-1.7b_shared_s1",
+      "model": "Qwen/Qwen3-1.7B-Base",
+      "estimator": "shared",
+      "seed": 1
+    },
+    {
+      "run_id": "selfplay-kl_qwen3-1.7b_rae_s2",
+      "model": "Qwen/Qwen3-1.7B-Base",
+      "estimator": "rae",
+      "seed": 2
+    },
+    {
+      "run_id": "selfplay-kl_qwen3-1.7b_shared_s2",
+      "model": "Qwen/Qwen3-1.7B-Base",
+      "estimator": "shared",
+      "seed": 2
+    }
+  ]
+}

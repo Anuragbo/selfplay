@@ -42,8 +42,12 @@ def _gpu(name: str, data: dict) -> str | None:
     return HW_SUFFIX[m.group(1)] if m else None
 
 
+ARM_PREFIXES = {"selfplay-kl": "self-play + KL", "selfplay": "self-play", "pilot": "pilot vs never_fold"}
+
+
 def _arm(run_id: str) -> str:
-    return "self-play" if run_id.startswith("selfplay") else "pilot vs never_fold" if run_id.startswith("pilot") else ""
+    """Arm from the run id's prefix (the part before _qwen...), e.g. selfplay-kl_qwen3-1.7b_rae_s0 -> self-play + KL."""
+    return ARM_PREFIXES.get(run_id.split("_qwen")[0], "")
 
 
 def describe(path: Path) -> dict:

@@ -89,3 +89,15 @@ def test_load_scores_strata_and_intervals(results):
     lo, hi = hierarchical_ci(deltas, strata, n_boot=2000)
     assert lo <= deltas.mean() <= hi
     assert t_interval([1.0]) is None and t_interval([1.0, 1.0]) == (1.0, 1.0)
+
+
+def test_kl_runs_form_their_own_arm_and_stay_out_of_the_design_pool(results):
+    run = "selfplay-kl_qwen3-1.7b_rae_s1"
+    _eval(results / f"eval-{run}-step30.json", f"eval-{run}-step30", "1,1,1,1", estimator="rae", seed=1)
+    _eval(results / f"eval-{run}-step60.json", f"eval-{run}-step60", "0,0,0,0", estimator="rae", seed=1, step=60)
+    out = analyse(results, "NVIDIA H100 PCIe", "", "MATH-500")
+    arms = {(a["arm"], a["estimator"]): a for a in out["primary"]["arms"]}
+    assert arms[("self-play + KL", "rae")]["n_seeds"] == 1  # step 60 is not mixed with step 30
+    assert out["primary"]["factors"]["self-play + KL minus self-play"]["n_runs"] == [1, 3]
+    assert out["primary"]["factors"]["RAE minus shared"]["n_runs"] == [3, 1]
+    assert out["primary"]["all_trained_runs"]["n_seeds"] == 4

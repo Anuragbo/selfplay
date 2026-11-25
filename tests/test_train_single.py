@@ -258,3 +258,43 @@ def test_time_budget_saves_the_last_step(tmp_path):
     run = {**RUN, "steps": 30, "save_every": 10, "matches_per_step": 2, "mini_batch_size": 2, "max_new_tokens": 4}
     assert train(run, _tiny_model(), _Tok(), tmp_path, generate=generate, device="cpu", max_seconds=0.001) == 1
     assert latest_checkpoint(tmp_path)[0] == 1
+
+
+def _kl_from_base(model, example):
+    from selfplay.train_single import encode_batch
+
+    ids, attention, reply = encode_batch([example], _Tok(), 100)
+    with torch.no_grad():
+        policy = torch.log_softmax(model(input_ids=ids, attention_mask=attention, use_cache=False).logits[:, :-1], -1)
+        with model.disable_adapter():
+            base = torch.log_softmax(model(input_ids=ids, attention_mask=attention, use_cache=False).logits[:, :-1], -1)
+    per_position = (policy.exp() * (policy - base)).sum(-1)
+    return (per_position * reply[:, 1:]).sum().item()
+
+
+def test_kl_penalty_is_logged_and_zero_for_a_fresh_adapter():
+    from selfplay.train_single import reinforce_update
+
+    model = _tiny_model()
+    optimizer, scaler = _optim(model)
+    examples = [Example("prompt", "aaaa", False, 1.0), Example("prompt", "zzzz", False, -1.0)]
+    first = reinforce_update(model, _Tok(), examples, optimizer, scaler, {**RUN, "kl_coef": 0.1})
+    assert first["kl_per_token"] == pytest.approx(0.0, abs=1e-6)  # LoRA starts as the identity
+    later = reinforce_update(model, _Tok(), examples, optimizer, scaler, {**RUN, "kl_coef": 0.1})
+    assert later["kl_per_token"] > 0
+    assert "kl_per_token" not in reinforce_update(model, _Tok(), examples, optimizer, scaler, RUN)
+
+
+def test_kl_penalty_keeps_the_policy_closer_to_the_base_model():
+    from selfplay.train_single import reinforce_update
+
+    good, bad = Example("prompt", "aaaa", False, 1.0), Example("prompt", "zzzz", False, -1.0)
+    drift = {}
+    for kl_coef in (0.0, 20.0):
+        model = _tiny_model()
+        optimizer, scaler = _optim(model)
+        for _ in range(15):
+            reinforce_update(model, _Tok(), [good, bad], optimizer, scaler, {**RUN, "max_new_tokens": 4,
+                                                                              "kl_coef": kl_coef})
+        drift[kl_coef] = _kl_from_base(model, good)
+    assert 0 <= drift[20.0] < drift[0.0]
