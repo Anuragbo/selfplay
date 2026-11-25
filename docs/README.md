@@ -89,14 +89,81 @@ REINFORCE, 30 steps × 8 matches, seed 0.
 7. **30 steps is undertraining.** It is 240 matches, about 0.5% of SPIRAL-scale training (51,200). With τ = 0.001,
    each baseline moves only about 3% in 30 steps, so RAE and the shared baseline barely differ in how they act.
 
+## Check-in 5 update: seeds 1–2 on the SJSU HPC (H100)
+
+Nine more training runs, all on one NVIDIA H100 each, with the same settings as above: self-play shared seed 0, and
+seeds 1 and 2 of all four arms. Every number below is compared with the base model evaluated on the same H100
+(58.8%; the T4 run gave 59.2%, and the two agree on 98% of problems, McNemar p = 0.75). The 5080 runs above stay
+separate, because their files are not yet in `results/`. Sources: `results/INDEX.md` lists every file;
+`results/seed_stats.json` (from `explore/seed_stats.py`) holds the pooled statistics.
+
+### MATH-500 per run (H100)
+
+| Arm | Seed | Accuracy | No answer | vs. base (95% CI) | McNemar p | Final tokens per move |
+|---|---|---|---|---|---|---|
+| Base (untrained) | — | 58.8% | 10.8% | — | — | — |
+| Self-play, RAE | 1 | **64.0%** | 3.4% | **+5.2 (+1.2, +9.2)** | 0.015 | 120 |
+| Self-play, RAE | 2 | 55.8% | 7.4% | −3.0 (−7.0, +1.0) | 0.17 | 28 ⚠ |
+| Self-play, shared | 0 | 62.4% | 3.4% | +3.6 (−0.2, +7.4) | 0.082 | 98 |
+| Self-play, shared | 1 | **11.0%** | 36.4% | **−47.8 (−52.4, −43.0)** | <10⁻⁵⁰ | 6 ⚠ |
+| Self-play, shared | 2 | 55.2% | 4.8% | −3.6 (−7.6, +0.4) | 0.095 | 26 ⚠ |
+| Pilot, RAE | 1 | **52.8%** | 7.2% | **−6.0 (−10.4, −1.6)** | 0.008 | 233 |
+| Pilot, RAE | 2 | 57.4% | 3.6% | −1.4 (−5.6, +2.8) | 0.58 | 249 |
+| Pilot, shared | 1 | 61.2% | 4.6% | +2.4 (−1.6, +6.4) | 0.28 | 207 |
+| Pilot, shared | 2 | **50.6%** | 7.2% | **−8.2 (−12.4, −4.0)** | 0.0002 | 5 ⚠ |
+
+⚠ = reply-length collapse: below 50 tokens per move at the end of training.
+
+### Pooled over seeds
+
+The interval resamples both seeds and problems (hierarchical bootstrap). With two or three seeds it still understates
+seed-to-seed variation. A t interval over the seed means is far wider: about ±50 points for every arm.
+
+| Arm | Seeds | Mean change | 95% CI | Seeds above base |
+|---|---|---|---|---|
+| Self-play, RAE | 2 | +1.1 | (−5.6, +7.8) | 1 of 2 |
+| Self-play, shared | 3 | −15.9 | (−46.6, +3.6) | 1 of 3 |
+| Pilot, RAE | 2 | −3.7 | (−9.0, +1.4) | 0 of 2 |
+| Pilot, shared | 2 | −2.9 | (−11.0, +5.0) | 1 of 2 |
+| All nine runs | 9 | −6.5 | (−18.3, +1.8) | 3 of 9 |
+
+### Findings
+
+1. **No arm transfers reliably to MATH-500 at this scale.** Every arm with two or more seeds has seeds on both sides
+   of zero, or both below. All pooled intervals include zero, and the spread between seeds of one arm (5–11 points,
+   leaving out the 11% run) is larger than any effect.
+2. **Reply-length collapse is the main failure, and it is not specific to self-play or to RAE.** In 4 of 9 runs the
+   game replies shrank to 5–30 tokens per move, often a bare `\boxed{[call]}` with no reasoning (Fig. 7):
+   3 of the 5 shared-baseline runs (one of them against the scripted opponent) and 1 of the 4 RAE runs. The worst case
+   (self-play shared s1) lost its math ability: on MATH-500 it loops on fragments such as
+   "Step-By-Path-Reasoning-…" until the 4,096-token limit (46% of problems truncated).
+3. **This revises Check-in 4 findings 1, 3 and 4.** With more seeds, the shared baseline no longer beats RAE, and RAE
+   no longer consistently hurts: self-play RAE s1 is the largest significant gain (+5.2). Reply shortening happens
+   under both estimators and is, if anything, more frequent with the shared baseline. The one-seed differences in
+   Check-in 4 were seed variance.
+4. **Where accuracy rises, most of the gain is formatting.** The runs above the base cut the no-answer rate from 10.8%
+   to 3.4–4.6%. Accuracy on answered problems barely moves (65.9% base, 66.3% for self-play RAE s1).
+5. **Early truncation explains the first drop in length, but not the full collapse.** In steps 1–5, 21–62% of game
+   replies hit the 512-token cap. A truncated reply has no `\boxed{}` answer, so it loses both the format bonus and
+   the match. By steps 6–15 this falls to 7–18% in every run. Early truncation does not predict which runs go on to
+   collapse: self-play shared s0 had the most early truncation (62%) and did not. A transcript audit (replaying
+   checkpoints 10, 20 and 30 of every run) is under way to see what drives the rest.
+6. **Exploratory only (the subset was chosen after seeing the results):** among the five runs that did not collapse,
+   self-play scores +6.1 points (+1.1, +11.3) above the pilot runs. A run designed to prevent the collapse would be
+   needed to test this.
+
 ## Next steps
 
-1. **Self-play shared baseline, seed 0**, then MATH-500. This completes the self-play RAE vs. shared comparison.
-2. **Seeds 1 and 2** for all four arms (pilot and self-play, RAE and shared), to separate a real effect from seed noise.
-3. **Longer runs (60–100 steps)**, possibly with a larger τ, so the two baselines actually differ.
-4. **Transcript audit**: why RAE replies get shorter, and which never_fold situations self-play never trains on.
-5. **Full math suite** (six benchmarks) with the pooled paired test, on the base model and every trained checkpoint.
-6. **Move results into `results/`** and regenerate the statistics and figures.
+1. ~~Self-play shared baseline, seed 0~~ — done (H100, 62.4%).
+2. ~~Seeds 1 and 2 for all four arms~~ — done (H100). The three 5080 seed-0 runs are still to be added to `results/`.
+3. **Prevent the length collapse** (KL penalty to the base model, or a length-aware reward), then **longer runs
+   (60–100 steps)**, possibly with a larger τ. Without the fix, longer runs would mostly measure the collapse.
+4. **Transcript audit**: under way (`hpc/audit.sbatch`, `explore/transcript_audit.py`).
+5. **Full math suite** (six benchmarks) on the base model and the nine H100 checkpoints: queued
+   (`*-suite` results).
+6. ~~Move results into `results/`~~ — H100 results are in `results/` and labelled (`results/INDEX.md`); pooled
+   statistics in `results/seed_stats.json`, figures in `figures/fig6_seed_effects.png` and
+   `figures/fig7_reply_length.png`.
 
 ## References
 
