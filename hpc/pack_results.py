@@ -27,11 +27,15 @@ def pack_train(run_id: str, label: str, checkpoints: Path) -> dict:
             "metrics": [r for r in rows if r["step"] <= steps[-1]]}
 
 
-def pack_eval(eval_id: str, outputs: Path) -> dict:
+def pack_eval(eval_id: str, outputs: Path, checkpoints: Path) -> dict:
     d = outputs / eval_id
     config = json.loads((d / "run_config.json").read_text())
     _, bits = summarize(_read_jsonl(d / "per_problem.jsonl"), {})
     results = [json.loads(line) for line in (d / "results.jsonl").read_text().splitlines() if line.strip()]
+    # hpc/eval.sbatch did not pass --seed, so rows say seed 0; the training seed is in the adapter's run_config
+    if config.get("lora"):
+        seed = json.loads((Path(config["lora"]) / "run_config.json").read_text())["seed"]
+        results = [{**r, "seed": seed} for r in results]
     return {"run_id": eval_id, "results": results, "correct": bits, "versions": config["versions"]}
 
 
@@ -48,7 +52,7 @@ def main() -> None:
     if args.kind == "train":
         obj, name = pack_train(args.id, args.label, args.checkpoints), f"train-{args.id}.json"
     else:
-        obj, name = pack_eval(args.id, args.outputs), f"{args.id}.json"
+        obj, name = pack_eval(args.id, args.outputs, args.checkpoints), f"{args.id}.json"
     path = args.results / name
     path.write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8")
     print("wrote", path)

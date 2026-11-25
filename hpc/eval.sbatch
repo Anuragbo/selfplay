@@ -28,7 +28,8 @@ if [ "$RUN_ID" = base ]; then
   LORA=()
 else
   EVAL_ID=eval-${RUN_ID}-step${STEP}
-  LORA=(--lora "checkpoints/$RUN_ID/step_$STEP" --game SpiralKuhnPoker-v1 --estimator "$ESTIMATOR"
+  SEED=${RUN_ID##*_s}
+  LORA=(--lora "checkpoints/$RUN_ID/step_$STEP" --seed "$SEED" --game SpiralKuhnPoker-v1 --estimator "$ESTIMATOR"
         --opponent "$OPPONENT")
 fi
 # shellcheck disable=SC2086
