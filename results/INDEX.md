@@ -45,14 +45,23 @@ Runs repeated on other hardware get a hardware suffix, e.g. `train-<run_id>-rtx5
 | --- | --- | --- | --- | --- | --- |
 | `eval-base-qwen3-1.7b-hpc-suite.json` | Qwen/Qwen3-1.7B-Base | base model |  |  | AIME 2024 0.0%, AIME 2025 6.7%, AMC 2023 35.0%, MATH-500 59.0%, Minerva Math 22.1%, OlympiadBench 26.7%, pooled 35.6% |
 | `eval-base-qwen3-1.7b-hpc.json` | Qwen/Qwen3-1.7B-Base | base model |  |  | MATH-500 58.8% |
+| `eval-pilot_qwen3-1.7b_rae_s1-step30-suite.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | rae | 1 | AIME 2024 3.3%, AIME 2025 3.3%, AMC 2023 30.0%, MATH-500 51.8%, Minerva Math 21.0%, OlympiadBench 20.6%, pooled 30.3% |
 | `eval-pilot_qwen3-1.7b_rae_s1-step30.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | rae | 1 | MATH-500 52.8% |
+| `eval-pilot_qwen3-1.7b_rae_s2-step30-suite.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | rae | 2 | AIME 2024 6.7%, AIME 2025 3.3%, AMC 2023 30.0%, MATH-500 57.4%, Minerva Math 25.0%, OlympiadBench 22.7%, pooled 33.8% |
 | `eval-pilot_qwen3-1.7b_rae_s2-step30.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | rae | 2 | MATH-500 57.4% |
+| `eval-pilot_qwen3-1.7b_shared_s1-step30-suite.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | shared | 1 | AIME 2024 3.3%, AIME 2025 3.3%, AMC 2023 32.5%, MATH-500 60.4%, Minerva Math 24.3%, OlympiadBench 24.9%, pooled 35.6% |
 | `eval-pilot_qwen3-1.7b_shared_s1-step30.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | shared | 1 | MATH-500 61.2% |
+| `eval-pilot_qwen3-1.7b_shared_s2-step30-suite.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | shared | 2 | AIME 2024 0.0%, AIME 2025 0.0%, AMC 2023 27.5%, MATH-500 50.2%, Minerva Math 22.4%, OlympiadBench 20.7%, pooled 29.9% |
 | `eval-pilot_qwen3-1.7b_shared_s2-step30.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | shared | 2 | MATH-500 50.6% |
+| `eval-selfplay_qwen3-1.7b_rae_s1-step30-suite.json` | Qwen/Qwen3-1.7B-Base | self-play | rae | 1 | AIME 2024 10.0%, AIME 2025 6.7%, AMC 2023 45.0%, MATH-500 63.8%, Minerva Math 24.3%, OlympiadBench 27.9%, pooled 38.5% |
 | `eval-selfplay_qwen3-1.7b_rae_s1-step30.json` | Qwen/Qwen3-1.7B-Base | self-play | rae | 1 | MATH-500 64.0% |
+| `eval-selfplay_qwen3-1.7b_rae_s2-step30-suite.json` | Qwen/Qwen3-1.7B-Base | self-play | rae | 2 | AIME 2024 3.3%, AIME 2025 3.3%, AMC 2023 35.0%, MATH-500 56.4%, Minerva Math 21.7%, OlympiadBench 21.3%, pooled 32.4% |
 | `eval-selfplay_qwen3-1.7b_rae_s2-step30.json` | Qwen/Qwen3-1.7B-Base | self-play | rae | 2 | MATH-500 55.8% |
+| `eval-selfplay_qwen3-1.7b_shared_s0-step30-suite.json` | Qwen/Qwen3-1.7B-Base | self-play | shared | 0 | AIME 2024 6.7%, AIME 2025 0.0%, AMC 2023 37.5%, MATH-500 61.4%, Minerva Math 26.1%, OlympiadBench 26.8%, pooled 37.2% |
 | `eval-selfplay_qwen3-1.7b_shared_s0-step30.json` | Qwen/Qwen3-1.7B-Base | self-play | shared | 0 | MATH-500 62.4% |
+| `eval-selfplay_qwen3-1.7b_shared_s1-step30-suite.json` | Qwen/Qwen3-1.7B-Base | self-play | shared | 1 | AIME 2024 0.0%, AIME 2025 0.0%, AMC 2023 2.5%, MATH-500 10.0%, Minerva Math 5.1%, OlympiadBench 3.3%, pooled 5.6% |
 | `eval-selfplay_qwen3-1.7b_shared_s1-step30.json` | Qwen/Qwen3-1.7B-Base | self-play | shared | 1 | MATH-500 11.0% |
+| `eval-selfplay_qwen3-1.7b_shared_s2-step30-suite.json` | Qwen/Qwen3-1.7B-Base | self-play | shared | 2 | AIME 2024 3.3%, AIME 2025 3.3%, AMC 2023 42.5%, MATH-500 55.4%, Minerva Math 18.0%, OlympiadBench 23.7%, pooled 32.6% |
 | `eval-selfplay_qwen3-1.7b_shared_s2-step30.json` | Qwen/Qwen3-1.7B-Base | self-play | shared | 2 | MATH-500 55.2% |
 
 ## Analysis and environment files
@@ -65,4 +74,5 @@ Runs repeated on other hardware get a hardware suffix, e.g. `train-<run_id>-rtx5
 | `kuhn_spiral.json` | Scripted-policy matchups, SPIRAL's KuhnPoker-v1 (Check-in 1) |
 | `kuhn_textarena.json` | Scripted-policy matchups, TextArena 0.7.4 KuhnPoker (Check-in 1) |
 | `kuhn_textarena_fixed.json` | Scripted-policy matchups, corrected stakes control (Check-in 1) |
-| `seed_stats.json` | Per-arm effects pooled over seeds (explore/seed_stats.py) |
+| `seed_stats.json` | Per-arm MATH-500 effects pooled over seeds (explore/seed_stats.py) |
+| `seed_stats_suite.json` | Per-arm effects on the six-benchmark suite pooled over seeds and benchmarks (explore/seed_stats.py --suffix=-suite --benchmark pooled) |

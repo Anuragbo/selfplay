@@ -128,6 +128,37 @@
     "source": "Colab T4 (Check-ins 2-3)"
   },
   {
+    "file": "eval-pilot_qwen3-1.7b_rae_s1-step30-suite.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-pilot_qwen3-1.7b_rae_s1-step30-suite",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "rae",
+    "seed": 1,
+    "step": 30,
+    "benchmarks": [
+      "AIME 2024",
+      "AIME 2025",
+      "AMC 2023",
+      "MATH-500",
+      "Minerva Math",
+      "OlympiadBench",
+      "pooled"
+    ],
+    "accuracy": {
+      "AIME 2024": 0.0333,
+      "AIME 2025": 0.0333,
+      "AMC 2023": 0.3,
+      "MATH-500": 0.518,
+      "Minerva Math": 0.2096,
+      "OlympiadBench": 0.2059,
+      "pooled": 0.3032
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
     "file": "eval-pilot_qwen3-1.7b_rae_s1-step30.json",
     "kind": "eval",
     "description": "",
@@ -142,6 +173,37 @@
     ],
     "accuracy": {
       "MATH-500": 0.528
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-pilot_qwen3-1.7b_rae_s2-step30-suite.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-pilot_qwen3-1.7b_rae_s2-step30-suite",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "rae",
+    "seed": 2,
+    "step": 30,
+    "benchmarks": [
+      "AIME 2024",
+      "AIME 2025",
+      "AMC 2023",
+      "MATH-500",
+      "Minerva Math",
+      "OlympiadBench",
+      "pooled"
+    ],
+    "accuracy": {
+      "AIME 2024": 0.0667,
+      "AIME 2025": 0.0333,
+      "AMC 2023": 0.3,
+      "MATH-500": 0.574,
+      "Minerva Math": 0.25,
+      "OlympiadBench": 0.2267,
+      "pooled": 0.3381
     },
     "gpu": "NVIDIA H100 PCIe",
     "source": "SJSU HPC H100 (Check-in 5)"
@@ -166,6 +228,37 @@
     "source": "SJSU HPC H100 (Check-in 5)"
   },
   {
+    "file": "eval-pilot_qwen3-1.7b_shared_s1-step30-suite.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-pilot_qwen3-1.7b_shared_s1-step30-suite",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "shared",
+    "seed": 1,
+    "step": 30,
+    "benchmarks": [
+      "AIME 2024",
+      "AIME 2025",
+      "AMC 2023",
+      "MATH-500",
+      "Minerva Math",
+      "OlympiadBench",
+      "pooled"
+    ],
+    "accuracy": {
+      "AIME 2024": 0.0333,
+      "AIME 2025": 0.0333,
+      "AMC 2023": 0.325,
+      "MATH-500": 0.604,
+      "Minerva Math": 0.2426,
+      "OlympiadBench": 0.2489,
+      "pooled": 0.3562
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
     "file": "eval-pilot_qwen3-1.7b_shared_s1-step30.json",
     "kind": "eval",
     "description": "",
@@ -180,6 +273,37 @@
     ],
     "accuracy": {
       "MATH-500": 0.612
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-pilot_qwen3-1.7b_shared_s2-step30-suite.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-pilot_qwen3-1.7b_shared_s2-step30-suite",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "shared",
+    "seed": 2,
+    "step": 30,
+    "benchmarks": [
+      "AIME 2024",
+      "AIME 2025",
+      "AMC 2023",
+      "MATH-500",
+      "Minerva Math",
+      "OlympiadBench",
+      "pooled"
+    ],
+    "accuracy": {
+      "AIME 2024": 0.0,
+      "AIME 2025": 0.0,
+      "AMC 2023": 0.275,
+      "MATH-500": 0.502,
+      "Minerva Math": 0.2243,
+      "OlympiadBench": 0.2074,
+      "pooled": 0.2993
     },
     "gpu": "NVIDIA H100 PCIe",
     "source": "SJSU HPC H100 (Check-in 5)"
@@ -204,6 +328,37 @@
     "source": "SJSU HPC H100 (Check-in 5)"
   },
   {
+    "file": "eval-selfplay_qwen3-1.7b_rae_s1-step30-suite.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay_qwen3-1.7b_rae_s1-step30-suite",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "rae",
+    "seed": 1,
+    "step": 30,
+    "benchmarks": [
+      "AIME 2024",
+      "AIME 2025",
+      "AMC 2023",
+      "MATH-500",
+      "Minerva Math",
+      "OlympiadBench",
+      "pooled"
+    ],
+    "accuracy": {
+      "AIME 2024": 0.1,
+      "AIME 2025": 0.0667,
+      "AMC 2023": 0.45,
+      "MATH-500": 0.638,
+      "Minerva Math": 0.2426,
+      "OlympiadBench": 0.2785,
+      "pooled": 0.3853
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
     "file": "eval-selfplay_qwen3-1.7b_rae_s1-step30.json",
     "kind": "eval",
     "description": "",
@@ -218,6 +373,37 @@
     ],
     "accuracy": {
       "MATH-500": 0.64
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-selfplay_qwen3-1.7b_rae_s2-step30-suite.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay_qwen3-1.7b_rae_s2-step30-suite",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "rae",
+    "seed": 2,
+    "step": 30,
+    "benchmarks": [
+      "AIME 2024",
+      "AIME 2025",
+      "AMC 2023",
+      "MATH-500",
+      "Minerva Math",
+      "OlympiadBench",
+      "pooled"
+    ],
+    "accuracy": {
+      "AIME 2024": 0.0333,
+      "AIME 2025": 0.0333,
+      "AMC 2023": 0.35,
+      "MATH-500": 0.564,
+      "Minerva Math": 0.2169,
+      "OlympiadBench": 0.2133,
+      "pooled": 0.3239
     },
     "gpu": "NVIDIA H100 PCIe",
     "source": "SJSU HPC H100 (Check-in 5)"
@@ -242,6 +428,37 @@
     "source": "SJSU HPC H100 (Check-in 5)"
   },
   {
+    "file": "eval-selfplay_qwen3-1.7b_shared_s0-step30-suite.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay_qwen3-1.7b_shared_s0-step30-suite",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "shared",
+    "seed": 0,
+    "step": 30,
+    "benchmarks": [
+      "AIME 2024",
+      "AIME 2025",
+      "AMC 2023",
+      "MATH-500",
+      "Minerva Math",
+      "OlympiadBench",
+      "pooled"
+    ],
+    "accuracy": {
+      "AIME 2024": 0.0667,
+      "AIME 2025": 0.0,
+      "AMC 2023": 0.375,
+      "MATH-500": 0.614,
+      "Minerva Math": 0.261,
+      "OlympiadBench": 0.2681,
+      "pooled": 0.3723
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
     "file": "eval-selfplay_qwen3-1.7b_shared_s0-step30.json",
     "kind": "eval",
     "description": "",
@@ -261,6 +478,37 @@
     "source": "SJSU HPC H100 (Check-in 5)"
   },
   {
+    "file": "eval-selfplay_qwen3-1.7b_shared_s1-step30-suite.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay_qwen3-1.7b_shared_s1-step30-suite",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "shared",
+    "seed": 1,
+    "step": 30,
+    "benchmarks": [
+      "AIME 2024",
+      "AIME 2025",
+      "AMC 2023",
+      "MATH-500",
+      "Minerva Math",
+      "OlympiadBench",
+      "pooled"
+    ],
+    "accuracy": {
+      "AIME 2024": 0.0,
+      "AIME 2025": 0.0,
+      "AMC 2023": 0.025,
+      "MATH-500": 0.1,
+      "Minerva Math": 0.0515,
+      "OlympiadBench": 0.0326,
+      "pooled": 0.0562
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
     "file": "eval-selfplay_qwen3-1.7b_shared_s1-step30.json",
     "kind": "eval",
     "description": "",
@@ -275,6 +523,37 @@
     ],
     "accuracy": {
       "MATH-500": 0.11
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-selfplay_qwen3-1.7b_shared_s2-step30-suite.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay_qwen3-1.7b_shared_s2-step30-suite",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "shared",
+    "seed": 2,
+    "step": 30,
+    "benchmarks": [
+      "AIME 2024",
+      "AIME 2025",
+      "AMC 2023",
+      "MATH-500",
+      "Minerva Math",
+      "OlympiadBench",
+      "pooled"
+    ],
+    "accuracy": {
+      "AIME 2024": 0.0333,
+      "AIME 2025": 0.0333,
+      "AMC 2023": 0.425,
+      "MATH-500": 0.554,
+      "Minerva Math": 0.1801,
+      "OlympiadBench": 0.237,
+      "pooled": 0.3264
     },
     "gpu": "NVIDIA H100 PCIe",
     "source": "SJSU HPC H100 (Check-in 5)"
@@ -330,7 +609,14 @@
   {
     "file": "seed_stats.json",
     "kind": "support",
-    "description": "Per-arm effects pooled over seeds (explore/seed_stats.py)",
+    "description": "Per-arm MATH-500 effects pooled over seeds (explore/seed_stats.py)",
+    "gpu": null,
+    "source": ""
+  },
+  {
+    "file": "seed_stats_suite.json",
+    "kind": "support",
+    "description": "Per-arm effects on the six-benchmark suite pooled over seeds and benchmarks (explore/seed_stats.py --suffix=-suite --benchmark pooled)",
     "gpu": null,
     "source": ""
   },

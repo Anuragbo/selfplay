@@ -29,7 +29,10 @@ SUPPORT = {  # non-run files: what they hold
     "kuhn_spiral.json": "Scripted-policy matchups, SPIRAL's KuhnPoker-v1 (Check-in 1)",
     "kuhn_textarena.json": "Scripted-policy matchups, TextArena 0.7.4 KuhnPoker (Check-in 1)",
     "kuhn_textarena_fixed.json": "Scripted-policy matchups, corrected stakes control (Check-in 1)",
-    "seed_stats.json": "Per-arm effects pooled over seeds (explore/seed_stats.py)",
+    "seed_stats.json": "Per-arm MATH-500 effects pooled over seeds (explore/seed_stats.py)",
+    "seed_stats_suite.json": "Per-arm effects on the six-benchmark suite pooled over seeds and benchmarks "
+                             "(explore/seed_stats.py --suffix=-suite --benchmark pooled)",
+    "transcript_audit.json": "Replayed Kuhn Poker replies per checkpoint (explore/transcript_audit.py)",
 }
 COLLAPSE_TOKENS = 50  # final reply length (tokens/turn) below which a run is flagged as length-collapsed
 

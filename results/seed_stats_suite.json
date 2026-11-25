@@ -1,0 +1,304 @@
+{
+  "gpu": "NVIDIA H100 PCIe",
+  "benchmark": "pooled",
+  "suffix": "-suite",
+  "base_file": "eval-base-qwen3-1.7b-hpc-suite.json",
+  "base_accuracy": 0.3561732385261797,
+  "n_problems": 1547,
+  "runs": [
+    {
+      "file": "eval-pilot_qwen3-1.7b_rae_s1-step30-suite.json",
+      "arm": "pilot vs never_fold",
+      "estimator": "rae",
+      "seed": 1,
+      "accuracy": 0.3031674208144796,
+      "change": -0.053005817711700064,
+      "final_tokens_per_turn": 233.4,
+      "collapsed": false
+    },
+    {
+      "file": "eval-pilot_qwen3-1.7b_rae_s2-step30-suite.json",
+      "arm": "pilot vs never_fold",
+      "estimator": "rae",
+      "seed": 2,
+      "accuracy": 0.3380736910148675,
+      "change": -0.01809954751131222,
+      "final_tokens_per_turn": 248.6,
+      "collapsed": false
+    },
+    {
+      "file": "eval-pilot_qwen3-1.7b_shared_s1-step30-suite.json",
+      "arm": "pilot vs never_fold",
+      "estimator": "shared",
+      "seed": 1,
+      "accuracy": 0.3561732385261797,
+      "change": 0.0,
+      "final_tokens_per_turn": 207.4,
+      "collapsed": false
+    },
+    {
+      "file": "eval-pilot_qwen3-1.7b_shared_s2-step30-suite.json",
+      "arm": "pilot vs never_fold",
+      "estimator": "shared",
+      "seed": 2,
+      "accuracy": 0.29928894634776987,
+      "change": -0.056884292178409825,
+      "final_tokens_per_turn": 5.1,
+      "collapsed": true
+    },
+    {
+      "file": "eval-selfplay_qwen3-1.7b_rae_s1-step30-suite.json",
+      "arm": "self-play",
+      "estimator": "rae",
+      "seed": 1,
+      "accuracy": 0.38526179702650293,
+      "change": 0.029088558500323207,
+      "final_tokens_per_turn": 120.1,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay_qwen3-1.7b_rae_s2-step30-suite.json",
+      "arm": "self-play",
+      "estimator": "rae",
+      "seed": 2,
+      "accuracy": 0.32385261797026504,
+      "change": -0.03232062055591468,
+      "final_tokens_per_turn": 28.2,
+      "collapsed": true
+    },
+    {
+      "file": "eval-selfplay_qwen3-1.7b_shared_s0-step30-suite.json",
+      "arm": "self-play",
+      "estimator": "shared",
+      "seed": 0,
+      "accuracy": 0.37233354880413705,
+      "change": 0.01616031027795734,
+      "final_tokens_per_turn": 98.5,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay_qwen3-1.7b_shared_s1-step30-suite.json",
+      "arm": "self-play",
+      "estimator": "shared",
+      "seed": 1,
+      "accuracy": 0.05623787976729153,
+      "change": -0.29993535875888816,
+      "final_tokens_per_turn": 6.0,
+      "collapsed": true
+    },
+    {
+      "file": "eval-selfplay_qwen3-1.7b_shared_s2-step30-suite.json",
+      "arm": "self-play",
+      "estimator": "shared",
+      "seed": 2,
+      "accuracy": 0.3264382676147382,
+      "change": -0.029734970911441498,
+      "final_tokens_per_turn": 25.7,
+      "collapsed": true
+    }
+  ],
+  "primary": {
+    "arms": [
+      {
+        "arm": "self-play",
+        "estimator": "rae",
+        "n_seeds": 2,
+        "mean_change": -0.0016160310277957349,
+        "sd_across_seeds": 0.04342284693776472,
+        "hierarchical_ci": [
+          -0.04524886877828054,
+          0.04266321913380737
+        ],
+        "t_ci_over_seeds": [
+          -0.391748545572075,
+          0.38851648351648355
+        ],
+        "seeds_positive": 1
+      },
+      {
+        "arm": "self-play",
+        "estimator": "shared",
+        "n_seeds": 3,
+        "mean_change": -0.10450333979745745,
+        "sd_across_seeds": 0.17079768656328237,
+        "hierarchical_ci": [
+          -0.2954104718810601,
+          0.015513897866839044
+        ],
+        "t_ci_over_seeds": [
+          -0.5288225584197888,
+          0.3198158788248739
+        ],
+        "seeds_positive": 1
+      },
+      {
+        "arm": "pilot vs never_fold",
+        "estimator": "rae",
+        "n_seeds": 2,
+        "mean_change": -0.03555268261150614,
+        "sd_across_seeds": 0.024682460364624154,
+        "hierarchical_ci": [
+          -0.06787330316742081,
+          -0.003878474466709761
+        ],
+        "t_ci_over_seeds": [
+          -0.2573122171945701,
+          0.18620685197155784
+        ],
+        "seeds_positive": 0
+      },
+      {
+        "arm": "pilot vs never_fold",
+        "estimator": "shared",
+        "n_seeds": 2,
+        "mean_change": -0.028442146089204912,
+        "sd_across_seeds": 0.04022326874235047,
+        "hierarchical_ci": [
+          -0.07045895281189399,
+          0.014221073044602456
+        ],
+        "t_ci_over_seeds": [
+          -0.38982805429864253,
+          0.3329437621202327
+        ],
+        "seeds_positive": 0
+      }
+    ],
+    "factors": {
+      "self-play minus pilot": {
+        "difference": -0.03135100193923723,
+        "hierarchical_ci": [
+          -0.15527230122818358,
+          0.052942792501616015
+        ],
+        "n_runs": [
+          5,
+          4
+        ]
+      },
+      "RAE minus shared": {
+        "difference": 0.05549450549450549,
+        "hierarchical_ci": [
+          -0.030900937297996124,
+          0.17369182288299934
+        ],
+        "n_runs": [
+          4,
+          5
+        ]
+      }
+    },
+    "all_trained_runs": {
+      "n_seeds": 9,
+      "mean_change": -0.049414637649931765,
+      "sd_across_seeds": 0.09835781972428886,
+      "hierarchical_ci": [
+        -0.12116821087409323,
+        0.0009355024060906153
+      ],
+      "t_ci_over_seeds": [
+        -0.1250190150780018,
+        0.026189739778138273
+      ],
+      "seeds_positive": 2
+    }
+  },
+  "excluding_collapsed": {
+    "arms": [
+      {
+        "arm": "self-play",
+        "estimator": "rae",
+        "n_seeds": 1,
+        "mean_change": 0.029088558500323207,
+        "sd_across_seeds": null,
+        "hierarchical_ci": [
+          0.008403361344537815,
+          0.05042016806722689
+        ],
+        "t_ci_over_seeds": null,
+        "seeds_positive": 1
+      },
+      {
+        "arm": "self-play",
+        "estimator": "shared",
+        "n_seeds": 1,
+        "mean_change": 0.01616031027795734,
+        "sd_across_seeds": null,
+        "hierarchical_ci": [
+          -0.003878474466709761,
+          0.03619909502262444
+        ],
+        "t_ci_over_seeds": null,
+        "seeds_positive": 1
+      },
+      {
+        "arm": "pilot vs never_fold",
+        "estimator": "rae",
+        "n_seeds": 2,
+        "mean_change": -0.03555268261150614,
+        "sd_across_seeds": 0.024682460364624154,
+        "hierarchical_ci": [
+          -0.06787330316742081,
+          -0.003878474466709761
+        ],
+        "t_ci_over_seeds": [
+          -0.2573122171945701,
+          0.18620685197155784
+        ],
+        "seeds_positive": 0
+      },
+      {
+        "arm": "pilot vs never_fold",
+        "estimator": "shared",
+        "n_seeds": 1,
+        "mean_change": 0.0,
+        "sd_across_seeds": null,
+        "hierarchical_ci": [
+          -0.021331609566903685,
+          0.021331609566903685
+        ],
+        "t_ci_over_seeds": null,
+        "seeds_positive": 0
+      }
+    ],
+    "factors": {
+      "self-play minus pilot": {
+        "difference": 0.046326222796811034,
+        "hierarchical_ci": [
+          0.01680672268907563,
+          0.07800043094160741
+        ],
+        "n_runs": [
+          2,
+          3
+        ]
+      },
+      "RAE minus shared": {
+        "difference": -0.02208575737987503,
+        "hierarchical_ci": [
+          -0.06399482870071105,
+          0.02090336134453778
+        ],
+        "n_runs": [
+          3,
+          2
+        ]
+      }
+    },
+    "all_trained_runs": {
+      "n_seeds": 5,
+      "mean_change": -0.005171299288946347,
+      "sd_across_seeds": 0.03205775457524871,
+      "hierarchical_ci": [
+        -0.03749191984486102,
+        0.02417905623787972
+      ],
+      "t_ci_over_seeds": [
+        -0.04496987768475845,
+        0.03462727910686576
+      ],
+      "seeds_positive": 2
+    }
+  },
+  "collapse_threshold_tokens_per_turn": 50
+}
