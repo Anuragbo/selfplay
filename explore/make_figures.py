@@ -1,4 +1,7 @@
-"""Generate the report figures from the JSON files in results/ (Check-in 1: Figs. 1-2; 2: 3-4; 3: 5)."""
+"""Generate the report figures from the JSON files in results/ (Check-in 1: Figs. 1-2; 2: 3-4; 3: 5; 5: 6-7).
+
+Fig. 6 reads results/seed_stats.json, written by explore/seed_stats.py.
+"""
 
 import argparse
 import json
@@ -18,6 +21,8 @@ SPIRAL_MATH500_BASE_4B = 73.4  # Qwen3-4B-Base before training (SPIRAL, Table 1)
 SUITE = {"AIME24": "AIME 2024", "AMC23": "AMC 2023", "Minerva": "Minerva Math",
          "MATH-500": "MATH-500", "OlympiadBench": "OlympiadBench"}
 CHANGE_RATES = (0.16, 0.12, 0.08)
+CHECKIN3_RUNS = ("train-pilot_qwen3-1.7b_rae_s0.json", "train-pilot_qwen3-1.7b_shared_s0.json")  # Colab T4
+H100 = "NVIDIA H100 PCIe"
 
 KUHN_VARIANTS = [
     ("TextArena 0.7.4 (PyPI)", "kuhn_textarena.json", BLUE),
@@ -164,7 +169,7 @@ def kuhn_base_figure(results: Path, out: Path) -> None:
 
 
 def training_curves_figure(results: Path, out: Path, smooth: int = 5) -> None:
-    runs = [_load(p) for p in sorted(results.glob("train-*.json"))]
+    runs = [_load(results / name) for name in CHECKIN3_RUNS if (results / name).exists()]
     fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.6), dpi=200, sharex=True)
     panels = (("invalid_move_loss_rate", "Matches lost by an invalid move (%)"),
               ("format_error_rate", "Replies without \\boxed{} (%)"))
@@ -189,6 +194,63 @@ def training_curves_figure(results: Path, out: Path, smooth: int = 5) -> None:
     plt.close(fig)
 
 
+def seed_effects_figure(results: Path, out: Path, floor: float = -15.0) -> None:
+    """Per-seed MATH-500 change vs. the same-GPU base, one row per arm, with the seed-pooled mean and interval."""
+    stats = _load(results / "seed_stats.json")
+    arms = stats["primary"]["arms"]
+    fig, ax = plt.subplots(figsize=(6.4, 0.55 * len(arms) + 1.0), dpi=200)
+    for y, arm in enumerate(arms):
+        color = BLUE if arm["estimator"] == "rae" else ORANGE
+        runs = [r for r in stats["runs"] if r["arm"] == arm["arm"] and r["estimator"] == arm["estimator"]]
+        for r in runs:
+            x = 100 * r["change"]
+            ax.scatter(max(x, floor), y + 0.12, s=28, zorder=3, color=color if not r["collapsed"] else "white",
+                       edgecolors=color, linewidths=1.2)
+            if x < floor:
+                ax.annotate(f"{x:+.0f} (s{r['seed']})", (floor, y + 0.12), xytext=(4, -9),
+                            textcoords="offset points", fontsize=6.5, color=MUTED)
+        lo, hi = (100 * v for v in arm["hierarchical_ci"])
+        ax.plot([max(lo, floor), hi], [y - 0.15, y - 0.15], color=INK, lw=1.4)
+        ax.plot(max(100 * arm["mean_change"], floor), y - 0.15, marker="|", markersize=9, color=INK)
+    ax.axvline(0, color=MUTED, lw=0.8, ls="--")
+    names = {"rae": "RAE", "shared": "shared"}
+    ax.set_yticks(range(len(arms)),
+                  [f"{a['arm'].replace(' vs never_fold', '')}, {names[a['estimator']]}" for a in arms])
+    ax.invert_yaxis()
+    ax.set_xlim(floor - 1, None)
+    ax.set_xlabel(f"MATH-500 change vs. base ({100 * stats['base_accuracy']:.1f}%), percentage points")
+    ax.set_title("Dots: seeds (hollow = reply-length collapse). Bar: mean with seed + problem bootstrap 95% CI",
+                 fontsize=7.5, color=INK_SECONDARY)
+    ax.xaxis.grid(True, color=GRID, lw=0.6)
+    ax.set_axisbelow(True)
+    fig.tight_layout()
+    fig.savefig(out)
+    plt.close(fig)
+
+
+def reply_length_figure(results: Path, out: Path) -> None:
+    """Reply length per move over training for every H100 run: self-play and pilot side by side."""
+    runs = [d for d in (_load(p) for p in sorted(results.glob("train-*.json")))
+            if (d.get("versions") or {}).get("gpu") == H100]
+    fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.6), dpi=200, sharey=True)
+    for ax, prefix, title in ((axes[0], "selfplay", "Self-play"), (axes[1], "pilot", "Pilot vs. never_fold")):
+        for run in (r for r in runs if r["run_id"].startswith(prefix)):
+            cfg = run["config"]
+            rows = run["metrics"]
+            ax.plot([r["step"] for r in rows], [r["completion_tokens_per_turn"] for r in rows], lw=1.4,
+                    color=BLUE if cfg["estimator"] == "rae" else ORANGE, ls=("-", "--", ":")[cfg["seed"] % 3],
+                    label=f"{cfg['estimator']} s{cfg['seed']}")
+        ax.set_title(title, fontsize=8, color=INK_SECONDARY)
+        ax.set_xlabel("Training step")
+        ax.yaxis.grid(True, color=GRID, lw=0.6)
+        ax.set_axisbelow(True)
+        ax.legend(frameon=False, fontsize=6.5, loc="upper right")
+    axes[0].set_ylabel("Tokens per move")
+    fig.tight_layout()
+    fig.savefig(out)
+    plt.close(fig)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("results", type=Path, help="directory with the result JSON files")
@@ -202,6 +264,9 @@ def main() -> None:
     math500_base_figure(args.results, args.figures / "fig3_math500_base.png")
     kuhn_base_figure(args.results, args.figures / "fig4_kuhn_base_turns.png")
     training_curves_figure(args.results, args.figures / "fig5_training_curves.png")
+    if (args.results / "seed_stats.json").exists():
+        seed_effects_figure(args.results, args.figures / "fig6_seed_effects.png")
+    reply_length_figure(args.results, args.figures / "fig7_reply_length.png")
     print(f"figures written to {args.figures}")
 
 

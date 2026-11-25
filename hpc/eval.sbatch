@@ -2,6 +2,8 @@
 # MATH-500 (or other benchmarks) on a base model or a trained LoRA adapter, on one GPU of SJSU CoE HPC3.
 #   sbatch hpc/eval.sbatch <run_id> <step> <estimator> <opponent> [benchmarks...]
 #   run_id "base" evaluates Qwen3-1.7B-Base itself.
+#   EVAL_SUFFIX=-suite sbatch ... appends to the eval id, so a second benchmark set gets its own outputs/ and results/
+#   files instead of extending an existing one.
 # Resumable: rerunning skips problems already in outputs/<eval id>/per_problem.jsonl.
 #SBATCH --job-name=sp-eval
 #SBATCH --partition=gpuqs
@@ -24,10 +26,10 @@ source hpc/env.sh
 nvidia-smi -L
 
 if [ "$RUN_ID" = base ]; then
-  EVAL_ID=eval-base-qwen3-1.7b-hpc
+  EVAL_ID=eval-base-qwen3-1.7b-hpc${EVAL_SUFFIX:-}
   LORA=()
 else
-  EVAL_ID=eval-${RUN_ID}-step${STEP}
+  EVAL_ID=eval-${RUN_ID}-step${STEP}${EVAL_SUFFIX:-}
   SEED=${RUN_ID##*_s}
   LORA=(--lora "checkpoints/$RUN_ID/step_$STEP" --seed "$SEED" --game SpiralKuhnPoker-v1 --estimator "$ESTIMATOR"
         --opponent "$OPPONENT")

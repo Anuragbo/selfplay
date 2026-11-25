@@ -1,0 +1,482 @@
+[
+  {
+    "file": "benchmark_stats.json",
+    "kind": "support",
+    "description": "Benchmark sizes and minimum detectable effects (Check-in 1)",
+    "gpu": null,
+    "source": ""
+  },
+  {
+    "file": "checkin2_stats.json",
+    "kind": "support",
+    "description": "Base 1.7B vs 4B paired MATH-500 statistics (Check-in 2)",
+    "gpu": null,
+    "source": ""
+  },
+  {
+    "file": "checkin3_stats.json",
+    "kind": "support",
+    "description": "Pilot training and transfer summary (Check-in 3)",
+    "gpu": null,
+    "source": ""
+  },
+  {
+    "file": "eval-base-qwen3-1.7b-hpc.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-base-qwen3-1.7b-hpc",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "base model",
+    "estimator": null,
+    "seed": null,
+    "step": 0,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.588
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-base-qwen3-1.7b.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-base-qwen3-1.7b",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "base model",
+    "estimator": null,
+    "seed": null,
+    "step": 0,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.592
+    },
+    "gpu": "Tesla T4",
+    "source": "Colab T4 (Check-ins 2-3)"
+  },
+  {
+    "file": "eval-base-qwen3-4b.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-base-qwen3-4b",
+    "model": "Qwen/Qwen3-4B-Base",
+    "arm": "base model",
+    "estimator": null,
+    "seed": null,
+    "step": 0,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.708
+    },
+    "gpu": "Tesla T4",
+    "source": "Colab T4 (Check-ins 2-3)"
+  },
+  {
+    "file": "eval-pilot_qwen3-1.7b_rae_s0-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-pilot_qwen3-1.7b_rae_s0-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "rae",
+    "seed": 0,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.622
+    },
+    "gpu": "Tesla T4",
+    "source": "Colab T4 (Check-ins 2-3)"
+  },
+  {
+    "file": "eval-pilot_qwen3-1.7b_rae_s1-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-pilot_qwen3-1.7b_rae_s1-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "rae",
+    "seed": 1,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.528
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-pilot_qwen3-1.7b_rae_s2-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-pilot_qwen3-1.7b_rae_s2-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "rae",
+    "seed": 2,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.574
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-pilot_qwen3-1.7b_shared_s1-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-pilot_qwen3-1.7b_shared_s1-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "shared",
+    "seed": 1,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.612
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-pilot_qwen3-1.7b_shared_s2-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-pilot_qwen3-1.7b_shared_s2-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "shared",
+    "seed": 2,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.506
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-selfplay_qwen3-1.7b_rae_s1-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay_qwen3-1.7b_rae_s1-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "rae",
+    "seed": 1,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.64
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-selfplay_qwen3-1.7b_rae_s2-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay_qwen3-1.7b_rae_s2-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "rae",
+    "seed": 2,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.558
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-selfplay_qwen3-1.7b_shared_s0-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay_qwen3-1.7b_shared_s0-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "shared",
+    "seed": 0,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.624
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-selfplay_qwen3-1.7b_shared_s1-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay_qwen3-1.7b_shared_s1-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "shared",
+    "seed": 1,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.11
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-selfplay_qwen3-1.7b_shared_s2-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay_qwen3-1.7b_shared_s2-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "shared",
+    "seed": 2,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.552
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "kuhn-base-qwen3-1.7b.json",
+    "kind": "kuhn",
+    "description": "Base model playing Kuhn Poker vs never_fold",
+    "run_id": "kuhn-base-qwen3-1.7b",
+    "gpu": "Tesla T4",
+    "source": "Colab T4 (Check-ins 2-3)"
+  },
+  {
+    "file": "kuhn_spiral.json",
+    "kind": "support",
+    "description": "Scripted-policy matchups, SPIRAL's KuhnPoker-v1 (Check-in 1)",
+    "gpu": null,
+    "source": ""
+  },
+  {
+    "file": "kuhn_textarena.json",
+    "kind": "support",
+    "description": "Scripted-policy matchups, TextArena 0.7.4 KuhnPoker (Check-in 1)",
+    "gpu": null,
+    "source": ""
+  },
+  {
+    "file": "kuhn_textarena_fixed.json",
+    "kind": "support",
+    "description": "Scripted-policy matchups, corrected stakes control (Check-in 1)",
+    "gpu": null,
+    "source": ""
+  },
+  {
+    "file": "seed_stats.json",
+    "kind": "support",
+    "description": "Per-arm effects pooled over seeds (explore/seed_stats.py)",
+    "gpu": null,
+    "source": ""
+  },
+  {
+    "file": "train-pilot_qwen3-1.7b_rae_s0.json",
+    "kind": "train",
+    "description": "RAE, seed 0",
+    "run_id": "pilot_qwen3-1.7b_rae_s0",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "rae",
+    "seed": 0,
+    "steps": 30,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 200.1,
+    "note": "",
+    "gpu": "Tesla T4",
+    "source": "Colab T4 (Check-ins 2-3)"
+  },
+  {
+    "file": "train-pilot_qwen3-1.7b_rae_s1.json",
+    "kind": "train",
+    "description": "Pilot RAE vs never_fold, seed 1 (H100)",
+    "run_id": "pilot_qwen3-1.7b_rae_s1",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "rae",
+    "seed": 1,
+    "steps": 30,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 233.4,
+    "note": "",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "train-pilot_qwen3-1.7b_rae_s2.json",
+    "kind": "train",
+    "description": "Pilot RAE vs never_fold, seed 2 (H100)",
+    "run_id": "pilot_qwen3-1.7b_rae_s2",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "rae",
+    "seed": 2,
+    "steps": 30,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 248.6,
+    "note": "",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "train-pilot_qwen3-1.7b_shared_s0.json",
+    "kind": "train",
+    "description": "Shared baseline (pilot, partial)",
+    "run_id": "pilot_qwen3-1.7b_shared_s0",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "shared",
+    "seed": 0,
+    "steps": 20,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 45.2,
+    "note": "partial: stopped at step 20 of 30; reply-length collapse",
+    "gpu": "Tesla T4",
+    "source": "Colab T4 (Check-ins 2-3)"
+  },
+  {
+    "file": "train-pilot_qwen3-1.7b_shared_s1.json",
+    "kind": "train",
+    "description": "Pilot shared baseline vs never_fold, seed 1 (H100)",
+    "run_id": "pilot_qwen3-1.7b_shared_s1",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "shared",
+    "seed": 1,
+    "steps": 30,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 207.4,
+    "note": "",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "train-pilot_qwen3-1.7b_shared_s2.json",
+    "kind": "train",
+    "description": "Pilot shared baseline vs never_fold, seed 2 (H100)",
+    "run_id": "pilot_qwen3-1.7b_shared_s2",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "pilot vs never_fold",
+    "estimator": "shared",
+    "seed": 2,
+    "steps": 30,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 5.1,
+    "note": "reply-length collapse",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "train-selfplay_qwen3-1.7b_rae_s1.json",
+    "kind": "train",
+    "description": "Self-play, RAE, seed 1 (H100)",
+    "run_id": "selfplay_qwen3-1.7b_rae_s1",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "rae",
+    "seed": 1,
+    "steps": 30,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 120.1,
+    "note": "",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "train-selfplay_qwen3-1.7b_rae_s2.json",
+    "kind": "train",
+    "description": "Self-play RAE, seed 2 (H100)",
+    "run_id": "selfplay_qwen3-1.7b_rae_s2",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "rae",
+    "seed": 2,
+    "steps": 30,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 28.2,
+    "note": "reply-length collapse",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "train-selfplay_qwen3-1.7b_shared_s0.json",
+    "kind": "train",
+    "description": "Self-play, shared baseline, seed 0 (H100)",
+    "run_id": "selfplay_qwen3-1.7b_shared_s0",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "shared",
+    "seed": 0,
+    "steps": 30,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 98.5,
+    "note": "",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "train-selfplay_qwen3-1.7b_shared_s1.json",
+    "kind": "train",
+    "description": "Self-play shared baseline, seed 1 (H100)",
+    "run_id": "selfplay_qwen3-1.7b_shared_s1",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "shared",
+    "seed": 1,
+    "steps": 30,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 6.0,
+    "note": "reply-length collapse",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "train-selfplay_qwen3-1.7b_shared_s2.json",
+    "kind": "train",
+    "description": "Self-play shared baseline, seed 2 (H100)",
+    "run_id": "selfplay_qwen3-1.7b_shared_s2",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play",
+    "estimator": "shared",
+    "seed": 2,
+    "steps": 30,
+    "planned_steps": 30,
+    "final_tokens_per_turn": 25.7,
+    "note": "reply-length collapse",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  }
+]
