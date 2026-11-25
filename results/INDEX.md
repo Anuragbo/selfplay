@@ -43,6 +43,7 @@ Runs repeated on other hardware get a hardware suffix, e.g. `train-<run_id>-rtx5
 
 | File | Model | Arm | Estimator | Seed | Accuracy |
 | --- | --- | --- | --- | --- | --- |
+| `eval-base-qwen3-1.7b-hpc-suite.json` | Qwen/Qwen3-1.7B-Base | base model |  |  | AIME 2024 0.0%, AIME 2025 6.7%, AMC 2023 35.0%, MATH-500 59.0%, Minerva Math 22.1%, OlympiadBench 26.7%, pooled 35.6% |
 | `eval-base-qwen3-1.7b-hpc.json` | Qwen/Qwen3-1.7B-Base | base model |  |  | MATH-500 58.8% |
 | `eval-pilot_qwen3-1.7b_rae_s1-step30.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | rae | 1 | MATH-500 52.8% |
 | `eval-pilot_qwen3-1.7b_rae_s2-step30.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | rae | 2 | MATH-500 57.4% |

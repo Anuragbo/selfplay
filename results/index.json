@@ -21,6 +21,37 @@
     "source": ""
   },
   {
+    "file": "eval-base-qwen3-1.7b-hpc-suite.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-base-qwen3-1.7b-hpc-suite",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "base model",
+    "estimator": null,
+    "seed": null,
+    "step": 0,
+    "benchmarks": [
+      "AIME 2024",
+      "AIME 2025",
+      "AMC 2023",
+      "MATH-500",
+      "Minerva Math",
+      "OlympiadBench",
+      "pooled"
+    ],
+    "accuracy": {
+      "AIME 2024": 0.0,
+      "AIME 2025": 0.0667,
+      "AMC 2023": 0.35,
+      "MATH-500": 0.59,
+      "Minerva Math": 0.2206,
+      "OlympiadBench": 0.2667,
+      "pooled": 0.3562
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
     "file": "eval-base-qwen3-1.7b-hpc.json",
     "kind": "eval",
     "description": "",
