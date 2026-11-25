@@ -4,7 +4,7 @@
 # Resubmitting the same command resumes from the newest checkpoint. Slurm sends SIGTERM 10 minutes before the time
 # limit; train_single then finishes the current step, saves it and exits.
 #SBATCH --job-name=sp-train
-#SBATCH --partition=gpuqm
+#SBATCH --partition=gpuqs
 #SBATCH --gres=gpu:h100:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
