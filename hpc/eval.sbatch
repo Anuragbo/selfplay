@@ -1,7 +1,9 @@
 #!/bin/bash
 # MATH-500 (or other benchmarks) on a base model or a trained LoRA adapter, on one GPU of SJSU CoE HPC3.
 #   sbatch hpc/eval.sbatch <run_id> <step> <estimator> <opponent> [benchmarks...]
-#   run_id "base" evaluates Qwen3-1.7B-Base itself.
+#   run_id "base" evaluates $MODEL itself (default Qwen/Qwen3-1.7B-Base): eval id eval-base-<model>-hpc, e.g.
+#   MODEL=Qwen/Qwen3-4B-Base gives eval-base-qwen3-4b-hpc. EVAL_ID=... overrides the id (e.g. SPIRAL's checkpoint).
+#   For a LoRA run on another base model, set MODEL to that base model too.
 #   SAMPLES=2 TEMPERATURE=0.6 TOP_P=0.95 sbatch ... draws several answers per problem (default: one greedy answer).
 #   EVAL_SUFFIX=-suite sbatch ... appends to the eval id, so a second benchmark set gets its own outputs/ and results/
 #   files instead of extending an existing one.
@@ -27,7 +29,8 @@ source hpc/env.sh
 nvidia-smi -L
 
 if [ "$RUN_ID" = base ]; then
-  EVAL_ID=eval-base-qwen3-1.7b-hpc${EVAL_SUFFIX:-}
+  SLUG=$(basename "$MODEL" | tr '[:upper:]' '[:lower:]')
+  EVAL_ID=${EVAL_ID:-eval-base-${SLUG%-base}-hpc${EVAL_SUFFIX:-}}
   LORA=()
 else
   EVAL_ID=eval-${RUN_ID}-step${STEP}${EVAL_SUFFIX:-}
