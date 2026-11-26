@@ -2,6 +2,7 @@
   "gpu": "NVIDIA H100 PCIe",
   "benchmark": "pooled",
   "suffix": "-suite",
+  "step": 30,
   "base_file": "eval-base-qwen3-1.7b-hpc-suite.json",
   "base_accuracy": 0.3561732385261797,
   "n_problems": 1547,

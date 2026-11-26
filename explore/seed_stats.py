@@ -32,7 +32,10 @@ T95 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8:
 
 
 def _matches_suffix(name: str, suffix: str) -> bool:
-    return name.endswith(f"{suffix}.json") and (suffix or not name.endswith("-suite.json"))
+    """Eval file set: '' is the greedy MATH-500 evals, '-suite' the greedy six-benchmark evals; sampled sets such as
+    '-suite-t0.6x2' only match their own suffix."""
+    stem = name.removesuffix(".json")
+    return stem.endswith(suffix) if suffix else "-suite" not in stem
 
 
 def load_scores(path: Path, benchmark: str) -> tuple[np.ndarray, np.ndarray]:
