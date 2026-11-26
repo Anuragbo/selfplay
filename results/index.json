@@ -717,6 +717,22 @@
     "source": "SJSU HPC H100 (Check-in 5)"
   },
   {
+    "file": "train-selfplay-kl_qwen3-1.7b_shared_s0.json",
+    "kind": "train",
+    "description": "Self-play + KL (0.05) shared baseline, seed 0 (H100)",
+    "run_id": "selfplay-kl_qwen3-1.7b_shared_s0",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play + KL",
+    "estimator": "shared",
+    "seed": 0,
+    "steps": 60,
+    "planned_steps": 60,
+    "final_tokens_per_turn": 381.3,
+    "note": "",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
     "file": "train-selfplay_qwen3-1.7b_rae_s1.json",
     "kind": "train",
     "description": "Self-play, RAE, seed 1 (H100)",

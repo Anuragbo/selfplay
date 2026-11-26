@@ -33,6 +33,7 @@ Runs repeated on other hardware get a hardware suffix, e.g. `train-<run_id>-rtx5
 | `train-pilot_qwen3-1.7b_rae_s2.json` | pilot vs never_fold | rae | 2 | 30/30 | 248.6 |  |
 | `train-pilot_qwen3-1.7b_shared_s1.json` | pilot vs never_fold | shared | 1 | 30/30 | 207.4 |  |
 | `train-pilot_qwen3-1.7b_shared_s2.json` | pilot vs never_fold | shared | 2 | 30/30 | 5.1 | reply-length collapse |
+| `train-selfplay-kl_qwen3-1.7b_shared_s0.json` | self-play + KL | shared | 0 | 60/60 | 381.3 |  |
 | `train-selfplay_qwen3-1.7b_rae_s1.json` | self-play | rae | 1 | 30/30 | 120.1 |  |
 | `train-selfplay_qwen3-1.7b_rae_s2.json` | self-play | rae | 2 | 30/30 | 28.2 | reply-length collapse |
 | `train-selfplay_qwen3-1.7b_shared_s0.json` | self-play | shared | 0 | 30/30 | 98.5 |  |
