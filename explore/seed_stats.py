@@ -6,7 +6,8 @@ answers kept paired). A t interval over the per-seed changes is reported as well
 which is the honest answer at this sample size. Only runs from one GPU type are compared with that GPU's base run.
 
     python explore/seed_stats.py results results/seed_stats.json                      # MATH-500, H100
-    python explore/seed_stats.py results out.json --suffix -suite --benchmark pooled   # full suite, pooled
+    python explore/seed_stats.py results out.json --suffix=-suite --benchmark pooled   # full suite, pooled
+    python explore/seed_stats.py results results/seed_stats_step60.json --step 60      # KL runs at step 60
 
 Runs whose final training reply length fell below results_index.COLLAPSE_TOKENS are flagged; the "excluding
 collapsed runs" numbers are a post-hoc sensitivity check, not the primary result.
@@ -111,8 +112,8 @@ def contrast(a: list[dict], b: list[dict], base_scores: np.ndarray, strata: np.n
             float(np.quantile(est, 0.975))], "n_runs": [len(a), len(b)]}
 
 
-def analyse(results: Path, gpu: str, suffix: str, benchmark: str) -> dict:
-    base, runs = collect(results, gpu, suffix, benchmark)
+def analyse(results: Path, gpu: str, suffix: str, benchmark: str, step: int = 30) -> dict:
+    base, runs = collect(results, gpu, suffix, benchmark, step)
     base_scores, strata = load_scores(results / base["file"], benchmark)
 
     def block(selected: list[dict]) -> dict:
@@ -139,7 +140,7 @@ def analyse(results: Path, gpu: str, suffix: str, benchmark: str) -> dict:
         per_run.append({"file": r["file"], "arm": r["arm"], "estimator": r["estimator"], "seed": r["seed"],
                         "accuracy": float(scores.mean()), "change": float((scores - base_scores).mean()),
                         "final_tokens_per_turn": r["final_tokens_per_turn"], "collapsed": r["collapsed"]})
-    return {"gpu": gpu, "benchmark": benchmark, "suffix": suffix, "base_file": base["file"],
+    return {"gpu": gpu, "benchmark": benchmark, "suffix": suffix, "step": step, "base_file": base["file"],
             "base_accuracy": float(base_scores.mean()), "n_problems": len(base_scores), "runs": per_run,
             "primary": block(runs), "excluding_collapsed": block([r for r in runs if not r["collapsed"]]),
             "collapse_threshold_tokens_per_turn": COLLAPSE_TOKENS}
@@ -152,11 +153,13 @@ def main() -> None:
     parser.add_argument("--gpu", default="NVIDIA H100 PCIe")
     parser.add_argument("--suffix", default="", help="eval file set, e.g. -suite for the six-benchmark evals")
     parser.add_argument("--benchmark", default="MATH-500", help="one benchmark name, or 'pooled'")
+    parser.add_argument("--step", type=int, default=30, help="training step of the evaluated checkpoints")
     args = parser.parse_args()
-    out = analyse(args.results, args.gpu, args.suffix, args.benchmark)
+    out = analyse(args.results, args.gpu, args.suffix, args.benchmark, args.step)
     args.out.write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8")
     for label, key in (("all runs", "primary"), ("excluding collapsed", "excluding_collapsed")):
-        print(f"--- {label} (base {100 * out['base_accuracy']:.1f}%, {out['benchmark']}, {out['gpu']})")
+        print(f"--- {label} (step {out['step']}, base {100 * out['base_accuracy']:.1f}%, {out['benchmark']}, "
+              f"{out['gpu']})")
         for a in out[key]["arms"]:
             lo, hi = a["hierarchical_ci"]
             print(f"{a['arm']:>20} {a['estimator']:<6} n={a['n_seeds']} change {100 * a['mean_change']:+.1f} "

@@ -61,8 +61,16 @@ Runs repeated on other hardware get a hardware suffix, e.g. `train-<run_id>-rtx5
 | `eval-pilot_qwen3-1.7b_shared_s2-step30.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | shared | 2 | MATH-500 50.6% |
 | `eval-selfplay-kl_qwen3-1.7b_rae_s0-step30.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | rae | 0 | MATH-500 60.0% |
 | `eval-selfplay-kl_qwen3-1.7b_rae_s0-step60.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | rae | 0 | MATH-500 59.2% |
+| `eval-selfplay-kl_qwen3-1.7b_rae_s1-step30.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | rae | 1 | MATH-500 59.6% |
+| `eval-selfplay-kl_qwen3-1.7b_rae_s1-step60.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | rae | 1 | MATH-500 61.6% |
+| `eval-selfplay-kl_qwen3-1.7b_rae_s2-step30.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | rae | 2 | MATH-500 59.0% |
+| `eval-selfplay-kl_qwen3-1.7b_rae_s2-step60.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | rae | 2 | MATH-500 60.4% |
 | `eval-selfplay-kl_qwen3-1.7b_shared_s0-step30.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | shared | 0 | MATH-500 59.2% |
 | `eval-selfplay-kl_qwen3-1.7b_shared_s0-step60.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | shared | 0 | MATH-500 62.6% |
+| `eval-selfplay-kl_qwen3-1.7b_shared_s1-step30.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | shared | 1 | MATH-500 59.4% |
+| `eval-selfplay-kl_qwen3-1.7b_shared_s1-step60.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | shared | 1 | MATH-500 59.8% |
+| `eval-selfplay-kl_qwen3-1.7b_shared_s2-step30.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | shared | 2 | MATH-500 59.2% |
+| `eval-selfplay-kl_qwen3-1.7b_shared_s2-step60.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | shared | 2 | MATH-500 64.4% |
 | `eval-selfplay_qwen3-1.7b_rae_s1-step30-suite.json` | Qwen/Qwen3-1.7B-Base | self-play | rae | 1 | AIME 2024 10.0%, AIME 2025 6.7%, AMC 2023 45.0%, MATH-500 63.8%, Minerva Math 24.3%, OlympiadBench 27.9%, pooled 38.5% |
 | `eval-selfplay_qwen3-1.7b_rae_s1-step30.json` | Qwen/Qwen3-1.7B-Base | self-play | rae | 1 | MATH-500 64.0% |
 | `eval-selfplay_qwen3-1.7b_rae_s2-step30-suite.json` | Qwen/Qwen3-1.7B-Base | self-play | rae | 2 | AIME 2024 3.3%, AIME 2025 3.3%, AMC 2023 35.0%, MATH-500 56.4%, Minerva Math 21.7%, OlympiadBench 21.3%, pooled 32.4% |
@@ -85,5 +93,6 @@ Runs repeated on other hardware get a hardware suffix, e.g. `train-<run_id>-rtx5
 | `kuhn_textarena.json` | Scripted-policy matchups, TextArena 0.7.4 KuhnPoker (Check-in 1) |
 | `kuhn_textarena_fixed.json` | Scripted-policy matchups, corrected stakes control (Check-in 1) |
 | `seed_stats.json` | Per-arm MATH-500 effects pooled over seeds (explore/seed_stats.py) |
+| `seed_stats_step60.json` | Per-arm MATH-500 effects of the 60-step KL runs at step 60, pooled over seeds (explore/seed_stats.py --step 60) |
 | `seed_stats_suite.json` | Per-arm effects on the six-benchmark suite pooled over seeds and benchmarks (explore/seed_stats.py --suffix=-suite --benchmark pooled) |
 | `transcript_audit.json` | Replayed Kuhn Poker replies per checkpoint (explore/transcript_audit.py) |

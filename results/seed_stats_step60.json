@@ -1,0 +1,148 @@
+{
+  "gpu": "NVIDIA H100 PCIe",
+  "benchmark": "MATH-500",
+  "suffix": "",
+  "step": 60,
+  "base_file": "eval-base-qwen3-1.7b-hpc.json",
+  "base_accuracy": 0.588,
+  "n_problems": 500,
+  "runs": [
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_rae_s0-step60.json",
+      "arm": "self-play + KL",
+      "estimator": "rae",
+      "seed": 0,
+      "accuracy": 0.592,
+      "change": 0.004,
+      "final_tokens_per_turn": 334.5,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_rae_s1-step60.json",
+      "arm": "self-play + KL",
+      "estimator": "rae",
+      "seed": 1,
+      "accuracy": 0.616,
+      "change": 0.028,
+      "final_tokens_per_turn": 187.5,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_rae_s2-step60.json",
+      "arm": "self-play + KL",
+      "estimator": "rae",
+      "seed": 2,
+      "accuracy": 0.604,
+      "change": 0.016,
+      "final_tokens_per_turn": 267.1,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_shared_s0-step60.json",
+      "arm": "self-play + KL",
+      "estimator": "shared",
+      "seed": 0,
+      "accuracy": 0.626,
+      "change": 0.038,
+      "final_tokens_per_turn": 381.3,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_shared_s1-step60.json",
+      "arm": "self-play + KL",
+      "estimator": "shared",
+      "seed": 1,
+      "accuracy": 0.598,
+      "change": 0.01,
+      "final_tokens_per_turn": 298.0,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_shared_s2-step60.json",
+      "arm": "self-play + KL",
+      "estimator": "shared",
+      "seed": 2,
+      "accuracy": 0.644,
+      "change": 0.056,
+      "final_tokens_per_turn": 234.3,
+      "collapsed": false
+    }
+  ],
+  "primary": {
+    "arms": [
+      {
+        "arm": "self-play + KL",
+        "estimator": "rae",
+        "n_seeds": 3,
+        "mean_change": 0.016,
+        "sd_across_seeds": 0.012,
+        "hierarchical_ci": [
+          -0.021333333333333333,
+          0.054
+        ],
+        "t_ci_over_seeds": [
+          -0.013812058499875518,
+          0.04581205849987552
+        ],
+        "seeds_positive": 3
+      },
+      {
+        "arm": "self-play + KL",
+        "estimator": "shared",
+        "n_seeds": 3,
+        "mean_change": 0.03466666666666667,
+        "sd_across_seeds": 0.023180451534284947,
+        "hierarchical_ci": [
+          -0.007333333333333333,
+          0.07666666666666666
+        ],
+        "t_ci_over_seeds": [
+          -0.022921414766136003,
+          0.09225474809946935
+        ],
+        "seeds_positive": 3
+      }
+    ],
+    "factors": {},
+    "all_trained_runs": null
+  },
+  "excluding_collapsed": {
+    "arms": [
+      {
+        "arm": "self-play + KL",
+        "estimator": "rae",
+        "n_seeds": 3,
+        "mean_change": 0.016,
+        "sd_across_seeds": 0.012,
+        "hierarchical_ci": [
+          -0.021333333333333333,
+          0.054
+        ],
+        "t_ci_over_seeds": [
+          -0.013812058499875518,
+          0.04581205849987552
+        ],
+        "seeds_positive": 3
+      },
+      {
+        "arm": "self-play + KL",
+        "estimator": "shared",
+        "n_seeds": 3,
+        "mean_change": 0.03466666666666667,
+        "sd_across_seeds": 0.023180451534284947,
+        "hierarchical_ci": [
+          -0.007333333333333333,
+          0.07666666666666666
+        ],
+        "t_ci_over_seeds": [
+          -0.022921414766136003,
+          0.09225474809946935
+        ],
+        "seeds_positive": 3
+      }
+    ],
+    "factors": {},
+    "all_trained_runs": null
+  },
+  "collapse_threshold_tokens_per_turn": 50
+}

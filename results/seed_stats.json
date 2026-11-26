@@ -2,6 +2,7 @@
   "gpu": "NVIDIA H100 PCIe",
   "benchmark": "MATH-500",
   "suffix": "",
+  "step": 30,
   "base_file": "eval-base-qwen3-1.7b-hpc.json",
   "base_accuracy": 0.588,
   "n_problems": 500,
@@ -95,6 +96,66 @@
       "change": -0.036,
       "final_tokens_per_turn": 25.7,
       "collapsed": true
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_rae_s0-step30.json",
+      "arm": "self-play + KL",
+      "estimator": "rae",
+      "seed": 0,
+      "accuracy": 0.6,
+      "change": 0.012,
+      "final_tokens_per_turn": 334.5,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_rae_s1-step30.json",
+      "arm": "self-play + KL",
+      "estimator": "rae",
+      "seed": 1,
+      "accuracy": 0.596,
+      "change": 0.008,
+      "final_tokens_per_turn": 187.5,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_rae_s2-step30.json",
+      "arm": "self-play + KL",
+      "estimator": "rae",
+      "seed": 2,
+      "accuracy": 0.59,
+      "change": 0.002,
+      "final_tokens_per_turn": 267.1,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_shared_s0-step30.json",
+      "arm": "self-play + KL",
+      "estimator": "shared",
+      "seed": 0,
+      "accuracy": 0.592,
+      "change": 0.004,
+      "final_tokens_per_turn": 381.3,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_shared_s1-step30.json",
+      "arm": "self-play + KL",
+      "estimator": "shared",
+      "seed": 1,
+      "accuracy": 0.594,
+      "change": 0.006,
+      "final_tokens_per_turn": 298.0,
+      "collapsed": false
+    },
+    {
+      "file": "eval-selfplay-kl_qwen3-1.7b_shared_s2-step30.json",
+      "arm": "self-play + KL",
+      "estimator": "shared",
+      "seed": 2,
+      "accuracy": 0.592,
+      "change": 0.004,
+      "final_tokens_per_turn": 234.3,
+      "collapsed": false
     }
   ],
   "primary": {
@@ -162,6 +223,38 @@
           0.6444179999999999
         ],
         "seeds_positive": 1
+      },
+      {
+        "arm": "self-play + KL",
+        "estimator": "rae",
+        "n_seeds": 3,
+        "mean_change": 0.007333333333333333,
+        "sd_across_seeds": 0.005033222956847167,
+        "hierarchical_ci": [
+          -0.028,
+          0.042666666666666665
+        ],
+        "t_ci_over_seeds": [
+          -0.005170894769370347,
+          0.019837561436037012
+        ],
+        "seeds_positive": 3
+      },
+      {
+        "arm": "self-play + KL",
+        "estimator": "shared",
+        "n_seeds": 3,
+        "mean_change": 0.004666666666666667,
+        "sd_across_seeds": 0.0011547005383792516,
+        "hierarchical_ci": [
+          -0.030666666666666665,
+          0.03933333333333333
+        ],
+        "t_ci_over_seeds": [
+          0.0017980000000000001,
+          0.007535333333333334
+        ],
+        "seeds_positive": 3
       }
     ],
     "factors": {
@@ -184,6 +277,17 @@
         ],
         "n_runs": [
           4,
+          5
+        ]
+      },
+      "self-play + KL minus self-play": {
+        "difference": 0.09720000000000001,
+        "hierarchical_ci": [
+          -0.029866666666666666,
+          0.29580499999999993
+        ],
+        "n_runs": [
+          6,
           5
         ]
       }
@@ -259,6 +363,38 @@
         ],
         "t_ci_over_seeds": null,
         "seeds_positive": 1
+      },
+      {
+        "arm": "self-play + KL",
+        "estimator": "rae",
+        "n_seeds": 3,
+        "mean_change": 0.007333333333333333,
+        "sd_across_seeds": 0.005033222956847167,
+        "hierarchical_ci": [
+          -0.028,
+          0.042666666666666665
+        ],
+        "t_ci_over_seeds": [
+          -0.005170894769370347,
+          0.019837561436037012
+        ],
+        "seeds_positive": 3
+      },
+      {
+        "arm": "self-play + KL",
+        "estimator": "shared",
+        "n_seeds": 3,
+        "mean_change": 0.004666666666666667,
+        "sd_across_seeds": 0.0011547005383792516,
+        "hierarchical_ci": [
+          -0.030666666666666665,
+          0.03933333333333333
+        ],
+        "t_ci_over_seeds": [
+          0.0017980000000000001,
+          0.007535333333333334
+        ],
+        "seeds_positive": 3
       }
     ],
     "factors": {
@@ -281,6 +417,17 @@
         ],
         "n_runs": [
           3,
+          2
+        ]
+      },
+      "self-play + KL minus self-play": {
+        "difference": -0.038,
+        "hierarchical_ci": [
+          -0.06733333333333333,
+          -0.009333333333333334
+        ],
+        "n_runs": [
+          6,
           2
         ]
       }

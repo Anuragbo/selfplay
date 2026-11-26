@@ -167,13 +167,47 @@ seed-to-seed variation. A t interval over the seed means is far wider: about ±5
    self-play scores +6.1 points (+1.1, +11.3) above the pilot runs. A run designed to prevent the collapse would be
    needed to test this.
 
+### Self-play with a KL penalty (H100)
+
+To prevent the collapse, we trained six more self-play runs with a KL penalty to the base model (k3 estimator,
+`kl_coef` 0.05, `configs/selfplay_kl.json`), for 60 steps instead of 30: RAE and shared, seeds 0–2, all other settings
+unchanged. Each run was evaluated on MATH-500 at steps 30 and 60. Sources: `results/eval-selfplay-kl_*.json`;
+`results/seed_stats.json` (step 30) and `results/seed_stats_step60.json` (step 60).
+
+| Estimator | Seed | Step 30 vs. base (95% CI) | Step 60 accuracy | Step 60 vs. base (95% CI) | McNemar p | No answer | Final tokens per move |
+|---|---|---|---|---|---|---|---|
+| RAE | 0 | +1.2 (−2.8, +5.0) | 59.2% | +0.4 (−3.6, +4.4) | 0.92 | 4.6% | 335 |
+| RAE | 1 | +0.8 (−3.0, +4.6) | 61.6% | +2.8 (−1.2, +7.0) | 0.21 | 3.4% | 187 |
+| RAE | 2 | +0.2 (−3.8, +4.2) | 60.4% | +1.6 (−2.4, +5.4) | 0.48 | 3.4% | 267 |
+| Shared | 0 | +0.4 (−3.6, +4.4) | 62.6% | +3.8 (−0.2, +8.0) | 0.087 | 5.6% | 381 |
+| Shared | 1 | +0.6 (−3.2, +4.4) | 59.8% | +1.0 (−3.0, +5.0) | 0.70 | 3.6% | 298 |
+| Shared | 2 | +0.4 (−3.4, +4.2) | **64.4%** | **+5.6 (+1.8, +9.4)** | 0.006 | 3.4% | 234 |
+
+Pooled over the six runs (hierarchical bootstrap; t interval over seeds in brackets):
+
+| Checkpoint | Mean change | 95% CI | t interval | Runs above base |
+|---|---|---|---|---|
+| Step 30 | +0.6 | (−2.6, +3.8) | [+0.2, +1.0] | 6 of 6 |
+| Step 60 | +2.5 | (−0.9, +6.1) | [+0.5, +4.6] | 6 of 6 |
+
+7. **The KL penalty prevents the collapse.** No KL run fell below 187 tokens per move; without KL, 4 of 9 runs fell
+   to 5–30 by step 30.
+8. **With KL, every run is at or slightly above the base model, and the seeds agree.** The seed spread at step 30 is
+   0.4 points (5–11 without KL). The step-60 gain of +2.5 is consistent across seeds (t interval excludes zero), but
+   the hierarchical interval, which also counts problem sampling, includes zero. Only shared s2 at step 60 is
+   significant on its own (p = 0.006), which does not survive a correction for the 12 comparisons (Bonferroni
+   threshold 0.004). Estimators again do not differ: RAE +1.6 and shared +3.5 at step 60, intervals overlapping.
+9. **As before, the gain is formatting, not reasoning.** The no-answer rate falls from 10.8% (base) to 6.5% at
+   step 30 and 4.0% at step 60 (means over runs), while accuracy on answered problems is slightly *below* the base
+   (63.6% and 63.9% vs. 65.9%). KL keeps the replies long but, as the audit predicts (finding 5), the game reward still
+   does not pay for reasoning.
+
 ## Next steps
 
 1. ~~Self-play shared baseline, seed 0~~ — done (H100, 62.4%).
 2. ~~Seeds 1 and 2 for all four arms~~ — done (H100). The three 5080 seed-0 runs are still to be added to `results/`.
-3. **Prevent the length collapse:** running. Self-play with a KL penalty to the base model (`kl_coef` 0.05,
-   `configs/selfplay_kl.json`), 60 steps, RAE and shared × seeds 0–2, evaluated at steps 30 and 60. The KL term
-   can keep replies long, but it does not make reasoning pay off in this game (finding 5).
+3. ~~Prevent the length collapse~~ — done (findings 7–9): the KL penalty keeps replies long and every run at or
+   slightly above the base, with the gain coming from fewer unanswered problems.
 4. ~~Transcript audit~~ — done (finding 5). Because the game itself rewards a reasoning-free policy, a fair test of
    transfer needs a game where the decisions matter: for example Kuhn Poker with standard stakes (a called bet
    doubles the pot, and the match goes to the chip leader), the variant profiled in Check-in 1

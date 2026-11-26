@@ -32,6 +32,8 @@ SUPPORT = {  # non-run files: what they hold
     "seed_stats.json": "Per-arm MATH-500 effects pooled over seeds (explore/seed_stats.py)",
     "seed_stats_suite.json": "Per-arm effects on the six-benchmark suite pooled over seeds and benchmarks "
                              "(explore/seed_stats.py --suffix=-suite --benchmark pooled)",
+    "seed_stats_step60.json": "Per-arm MATH-500 effects of the 60-step KL runs at step 60, pooled over seeds "
+                              "(explore/seed_stats.py --step 60)",
     "transcript_audit.json": "Replayed Kuhn Poker replies per checkpoint (explore/transcript_audit.py)",
 }
 COLLAPSE_TOKENS = 50  # final reply length (tokens/turn) below which a run is flagged as length-collapsed
