@@ -20,4 +20,4 @@ select = ["E", "F", "W", "I", "B", "UP"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["benchmark_stats", "kuhn_env_explore", "make_figures", "spiral_golden_transcripts", "selfplay", "checkin2_stats", "checkin3_stats",
-                     "results_index", "seed_stats", "transcript_audit"]
+                     "results_index", "seed_stats", "transcript_audit", "elo"]
