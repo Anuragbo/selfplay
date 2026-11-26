@@ -2,6 +2,7 @@
 # MATH-500 (or other benchmarks) on a base model or a trained LoRA adapter, on one GPU of SJSU CoE HPC3.
 #   sbatch hpc/eval.sbatch <run_id> <step> <estimator> <opponent> [benchmarks...]
 #   run_id "base" evaluates Qwen3-1.7B-Base itself.
+#   SAMPLES=2 TEMPERATURE=0.6 TOP_P=0.95 sbatch ... draws several answers per problem (default: one greedy answer).
 #   EVAL_SUFFIX=-suite sbatch ... appends to the eval id, so a second benchmark set gets its own outputs/ and results/
 #   files instead of extending an existing one.
 # Resumable: rerunning skips problems already in outputs/<eval id>/per_problem.jsonl.
@@ -36,4 +37,5 @@ else
 fi
 # shellcheck disable=SC2086
 exec python -u -m selfplay.evaluate --model "$MODEL" "${LORA[@]}" --benchmarks $BENCHMARKS \
-  --temperature 0 --max-tokens 4096 --run-id "$EVAL_ID" --step "$STEP" --out-dir "outputs/$EVAL_ID" --print-summary
+  --samples "${SAMPLES:-1}" --temperature "${TEMPERATURE:-0}" --top-p "${TOP_P:-1.0}" --max-tokens 4096 \
+  --run-id "$EVAL_ID" --step "$STEP" --out-dir "outputs/$EVAL_ID" --print-summary
