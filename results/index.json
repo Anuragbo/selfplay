@@ -328,6 +328,63 @@
     "source": "SJSU HPC H100 (Check-in 5)"
   },
   {
+    "file": "eval-selfplay-kl_qwen3-1.7b_rae_s0-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay-kl_qwen3-1.7b_rae_s0-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play + KL",
+    "estimator": "rae",
+    "seed": 0,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.6
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-selfplay-kl_qwen3-1.7b_shared_s0-step30.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay-kl_qwen3-1.7b_shared_s0-step30",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play + KL",
+    "estimator": "shared",
+    "seed": 0,
+    "step": 30,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.592
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "eval-selfplay-kl_qwen3-1.7b_shared_s0-step60.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay-kl_qwen3-1.7b_shared_s0-step60",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play + KL",
+    "estimator": "shared",
+    "seed": 0,
+    "step": 60,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.626
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
     "file": "eval-selfplay_qwen3-1.7b_rae_s1-step30-suite.json",
     "kind": "eval",
     "description": "",
@@ -733,6 +790,22 @@
     "source": "SJSU HPC H100 (Check-in 5)"
   },
   {
+    "file": "train-selfplay-kl_qwen3-1.7b_rae_s1.json",
+    "kind": "train",
+    "description": "Self-play + KL (0.05) RAE, seed 1 (H100)",
+    "run_id": "selfplay-kl_qwen3-1.7b_rae_s1",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play + KL",
+    "estimator": "rae",
+    "seed": 1,
+    "steps": 60,
+    "planned_steps": 60,
+    "final_tokens_per_turn": 187.5,
+    "note": "",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
     "file": "train-selfplay-kl_qwen3-1.7b_rae_s2.json",
     "kind": "train",
     "description": "Self-play + KL (0.05) RAE, seed 2 (H100)",
@@ -760,6 +833,22 @@
     "steps": 60,
     "planned_steps": 60,
     "final_tokens_per_turn": 381.3,
+    "note": "",
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
+    "file": "train-selfplay-kl_qwen3-1.7b_shared_s1.json",
+    "kind": "train",
+    "description": "Self-play + KL (0.05) shared baseline, seed 1 (H100)",
+    "run_id": "selfplay-kl_qwen3-1.7b_shared_s1",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play + KL",
+    "estimator": "shared",
+    "seed": 1,
+    "steps": 60,
+    "planned_steps": 60,
+    "final_tokens_per_turn": 298.0,
     "note": "",
     "gpu": "NVIDIA H100 PCIe",
     "source": "SJSU HPC H100 (Check-in 5)"
