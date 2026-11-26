@@ -347,6 +347,25 @@
     "source": "SJSU HPC H100 (Check-in 5)"
   },
   {
+    "file": "eval-selfplay-kl_qwen3-1.7b_rae_s0-step60.json",
+    "kind": "eval",
+    "description": "",
+    "run_id": "eval-selfplay-kl_qwen3-1.7b_rae_s0-step60",
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "arm": "self-play + KL",
+    "estimator": "rae",
+    "seed": 0,
+    "step": 60,
+    "benchmarks": [
+      "MATH-500"
+    ],
+    "accuracy": {
+      "MATH-500": 0.592
+    },
+    "gpu": "NVIDIA H100 PCIe",
+    "source": "SJSU HPC H100 (Check-in 5)"
+  },
+  {
     "file": "eval-selfplay-kl_qwen3-1.7b_shared_s0-step30.json",
     "kind": "eval",
     "description": "",

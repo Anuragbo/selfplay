@@ -60,6 +60,7 @@ Runs repeated on other hardware get a hardware suffix, e.g. `train-<run_id>-rtx5
 | `eval-pilot_qwen3-1.7b_shared_s2-step30-suite.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | shared | 2 | AIME 2024 0.0%, AIME 2025 0.0%, AMC 2023 27.5%, MATH-500 50.2%, Minerva Math 22.4%, OlympiadBench 20.7%, pooled 29.9% |
 | `eval-pilot_qwen3-1.7b_shared_s2-step30.json` | Qwen/Qwen3-1.7B-Base | pilot vs never_fold | shared | 2 | MATH-500 50.6% |
 | `eval-selfplay-kl_qwen3-1.7b_rae_s0-step30.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | rae | 0 | MATH-500 60.0% |
+| `eval-selfplay-kl_qwen3-1.7b_rae_s0-step60.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | rae | 0 | MATH-500 59.2% |
 | `eval-selfplay-kl_qwen3-1.7b_shared_s0-step30.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | shared | 0 | MATH-500 59.2% |
 | `eval-selfplay-kl_qwen3-1.7b_shared_s0-step60.json` | Qwen/Qwen3-1.7B-Base | self-play + KL | shared | 0 | MATH-500 62.6% |
 | `eval-selfplay_qwen3-1.7b_rae_s1-step30-suite.json` | Qwen/Qwen3-1.7B-Base | self-play | rae | 1 | AIME 2024 10.0%, AIME 2025 6.7%, AMC 2023 45.0%, MATH-500 63.8%, Minerva Math 24.3%, OlympiadBench 27.9%, pooled 38.5% |
