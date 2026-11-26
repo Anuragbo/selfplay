@@ -36,6 +36,7 @@ Runs repeated on other hardware get a hardware suffix, e.g. `train-<run_id>-rtx5
 | `train-selfplay-kl_qwen3-1.7b_rae_s0.json` | self-play + KL | rae | 0 | 60/60 | 334.5 |  |
 | `train-selfplay-kl_qwen3-1.7b_rae_s2.json` | self-play + KL | rae | 2 | 60/60 | 267.1 |  |
 | `train-selfplay-kl_qwen3-1.7b_shared_s0.json` | self-play + KL | shared | 0 | 60/60 | 381.3 |  |
+| `train-selfplay-kl_qwen3-1.7b_shared_s2.json` | self-play + KL | shared | 2 | 60/60 | 234.3 |  |
 | `train-selfplay_qwen3-1.7b_rae_s1.json` | self-play | rae | 1 | 30/30 | 120.1 |  |
 | `train-selfplay_qwen3-1.7b_rae_s2.json` | self-play | rae | 2 | 30/30 | 28.2 | reply-length collapse |
 | `train-selfplay_qwen3-1.7b_shared_s0.json` | self-play | shared | 0 | 30/30 | 98.5 |  |
